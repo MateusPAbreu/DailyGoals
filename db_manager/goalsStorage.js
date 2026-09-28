@@ -1,24 +1,34 @@
 import * as SQLite from 'expo-sqlite';
 
-const db = await SQLite
+let db;
 
-//Remember to worry about SQL injection
-await db.exec(`
-    PRAGMA journal_mode = WAL;
-    CREATE TABLE IF NOT EXISTS goals (
-        id INTEGER PRIMARY KEY NOT NULL, 
-        goalText TEXT NOT NULL, 
-        date DATETIME, 
+export async function initDatabase() {
+    if (!db) {
+        //await cannot be called outside of an async function
+        db = await SQLite.openDatabaseAsync('goals.db');
+        await db.execAsync(`
+        PRAGMA journal_mode = WAL;
+        CREATE TABLE IF NOT EXISTS goals (
+        id INTEGER PRIMARY KEY NOT NULL,
+        goalText TEXT NOT NULL,
+        date DATETIME,
         accomplished INTEGER
-        )
-`);
-
-export function getGoal(id){
-    const goal = db.prepare('SELECT * FROM goals WHERE goal.id=?').get(id)
-
-    return goal
+        );
+    `);
+    }
 }
 
-export function setGoal(goalText, date, accomplished){
-    db.prepare('INSERT INTO goals (goalText, date, accomplished) VALUES (?,?,?);'), [goalText, date, accomplished]
-}
+
+export async function getGoal(id) {
+    const goal = db.prepare('SELECT * FROM goals WHERE goals.id=?', [id]);
+
+    return goal;
+};
+
+export async function setGoal(goalText, date, accomplished) {
+    const result = await db.runAsync(
+        'INSERT INTO goals (goalText, date, accomplished) VALUES (?,?,?);',
+        [goalText, date, accomplished]
+    );
+    return result.lastInsertRowId;
+};

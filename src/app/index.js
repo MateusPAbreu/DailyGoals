@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import { StyleSheet, TextInput, Text, ScrollView, StatusBar, Pressable } from 'react-native';
+import { StyleSheet, TextInput, Text, ScrollView, StatusBar, Pressable, Button } from 'react-native';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
+import { setGoal, initDatabase } from '../../db_manager/goalsStorage';
 
 const Main = () => {
+    initDatabase();
     const [userGoal, setUserGoal] = useState('Set a goal for the day!')
 
     return (
@@ -13,9 +15,13 @@ const Main = () => {
                         <TextInput 
                             style={styles.input}
                             onChangeText={setUserGoal}
+                            // onKeyPress={e => handleKeyPress(e)}
                             value={userGoal}
                         />
-
+                        <Button
+                            onPress={() => console.log(userGoal)}
+                            title="Enter"
+                        />
                         
                     </Pressable>
                 </ScrollView>
