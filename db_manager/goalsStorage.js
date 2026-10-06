@@ -18,6 +18,11 @@ export async function initDatabase() {
     }
 }
 
+export async function allRows(){
+    const goals = await db.getAllAsync('SELECT * FROM goals');
+    console.log("Current goals: ", JSON.stringify(goals, null, 2));
+}
+
 
 export async function getGoal(id) {
     const goal = db.prepare('SELECT * FROM goals WHERE goals.id=?', [id]);

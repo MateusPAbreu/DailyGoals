@@ -1,11 +1,13 @@
 import { useState } from 'react';
-import { StyleSheet, TextInput, Text, ScrollView, StatusBar, Pressable, Button } from 'react-native';
-import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
-import { setGoal, initDatabase } from '../../db_manager/goalsStorage';
+import { Button, Pressable, ScrollView, StatusBar, StyleSheet, TextInput } from 'react-native';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { allRows, initDatabase, setGoal } from '../../db_manager/goalsStorage';
 
 const Main = () => {
     initDatabase();
-    const [userGoal, setUserGoal] = useState('Set a goal for the day!')
+    const [userGoal, setUserGoal] = useState('Set a goal for the day!');
+    const day = new Date();
+    //Need to learn why date is not transferring over...
 
     return (
         <SafeAreaProvider style={styles.container}>
@@ -19,7 +21,12 @@ const Main = () => {
                             value={userGoal}
                         />
                         <Button
-                            onPress={() => console.log(userGoal)}
+                            onPress={() => {
+                                setGoal(userGoal, day.toISOString, false);
+                                allRows();
+                                console.log(day.toISOString);
+                            }
+                            }
                             title="Enter"
                         />
                         
