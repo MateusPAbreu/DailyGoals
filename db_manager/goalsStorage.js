@@ -1,5 +1,7 @@
 import * as SQLite from 'expo-sqlite';
 
+
+//Gotta make the database path so it knows where to grab it from and doesn't wipe it out for every new run
 let db;
 
 export async function initDatabase() {
@@ -11,12 +13,13 @@ export async function initDatabase() {
         CREATE TABLE IF NOT EXISTS goals (
         id INTEGER PRIMARY KEY NOT NULL,
         goalText TEXT NOT NULL,
-        date DATETIME,
+        date TEXT,
         accomplished INTEGER
         );
     `);
     }
 }
+
 
 export async function allRows(){
     const goals = await db.getAllAsync('SELECT * FROM goals');
@@ -35,5 +38,6 @@ export async function setGoal(goalText, date, accomplished) {
         'INSERT INTO goals (goalText, date, accomplished) VALUES (?,?,?);',
         [goalText, date, accomplished]
     );
+
     return result.lastInsertRowId;
 };

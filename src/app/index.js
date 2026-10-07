@@ -7,6 +7,7 @@ const Main = () => {
     initDatabase();
     const [userGoal, setUserGoal] = useState('Set a goal for the day!');
     const day = new Date();
+    let sqliteDay = day.toISOString().split('T')[0];
     //Need to learn why date is not transferring over...
 
     return (
@@ -22,9 +23,9 @@ const Main = () => {
                         />
                         <Button
                             onPress={() => {
-                                setGoal(userGoal, day.toISOString, false);
+                                setGoal(userGoal, sqliteDay, true);
                                 allRows();
-                                console.log(day.toISOString);
+                                // console.log(typeof sqliteDay);
                             }
                             }
                             title="Enter"
