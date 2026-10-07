@@ -1,13 +1,13 @@
 import * as SQLite from 'expo-sqlite';
 
-
+const db_path = 'goals.db'
 //Gotta make the database path so it knows where to grab it from and doesn't wipe it out for every new run
-let db;
+const db = await SQLite.openDatabaseAsync(db_path);;
 
 export async function initDatabase() {
     if (!db) {
         //await cannot be called outside of an async function
-        db = await SQLite.openDatabaseAsync('goals.db');
+        // db = await SQLite.openDatabaseAsync('goals.db');
         await db.execAsync(`
         PRAGMA journal_mode = WAL;
         CREATE TABLE IF NOT EXISTS goals (
