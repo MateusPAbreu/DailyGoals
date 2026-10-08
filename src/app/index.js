@@ -1,11 +1,17 @@
 import { useState } from 'react';
 import { Button, Pressable, ScrollView, StatusBar, StyleSheet, TextInput } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { allRows, initDatabase, setGoal } from '../../db_manager/goalsStorage';
+import { getGoalWithDate, initDatabase, setGoal } from '../../db_manager/goalsStorage';
 
+{/*
+    TODO:
+
+    - Implement dynamic rendering with flatlist
+*/}
 const Main = () => {
     initDatabase();
     const [userGoal, setUserGoal] = useState('Set a goal for the day!');
+    const [dailyGoals, setDailyGoals] = useState([]);
     const day = new Date();
     let sqliteDay = day.toISOString().split('T')[0];
     //Need to learn why date is not transferring over...
@@ -23,9 +29,10 @@ const Main = () => {
                         />
                         <Button
                             onPress={() => {
-                                setGoal(userGoal, sqliteDay, true);
-                                allRows();
-                                // console.log(typeof sqliteDay);
+                                setGoal(userGoal, sqliteDay, false);
+                                // allRows();
+                                setDailyGoals(getGoalWithDate(sqliteDay));
+                                console.log(dailyGoals);
                             }
                             }
                             title="Enter"
