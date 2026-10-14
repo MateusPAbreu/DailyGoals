@@ -1,14 +1,27 @@
 import * as SQLite from 'expo-sqlite';
 
-// const db_path = 'goals.db';
-// const db = await SQLite.openDatabaseAsync(db_path);
-// Gotta make the database path so it knows where to grab it from and doesn't wipe it out for every new run
-let db;
+const db_path = 'goals.db';
+
+
+let db = null;
+
+async function databaseInitialization(){
+    if (!db){
+        db = await SQLite.openDatabaseAsync(db_path);
+    }
+    return db;
+}
+
+// db = databaseInitialization();
+
+initDatabase();
 
 export async function initDatabase() {
+    db = await databaseInitialization();
+
     if (!db) {
         //await cannot be called outside of an async function
-        db = await SQLite.openDatabaseAsync('goals.db');
+        // db = await SQLite.openDatabaseAsync('goals.db');
         await db.execAsync(`
         PRAGMA journal_mode = WAL;
         CREATE TABLE IF NOT EXISTS goals (
@@ -35,8 +48,10 @@ export async function getGoal(id) {
 };
 
 export async function getGoalWithDate(date) {
-    const goalDates = db.getAllAsync('SELECT * FROM goals WHERE goals.date=?', [date]);
+    // db = await databaseInitialization();
 
+    const goalDates = await db.getAllAsync('SELECT * FROM goals WHERE goals.date=?', [date]);
+    // console.log("Goal dates is " + goalDates);
     return goalDates;
 };
 
@@ -48,3 +63,9 @@ export async function setGoal(goalText, date, accomplished) {
 
     return result.lastInsertRowId;
 };
+
+export async function clearDatabase() {
+    await db.runAsync('DELETE FROM goals;')
+
+    console.log("Database cleaned")
+}
