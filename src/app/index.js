@@ -40,7 +40,15 @@ const Main = () => {
         <SafeAreaProvider style={styles.container}>
             <SafeAreaView>
                 <ScrollView>
+
+                    <View>
+                        <Text> {sqliteDay} </Text>
+
+                    </View>
+
                     <Pressable>
+
+
                         <TextInput
                             style={styles.input}
                             onChangeText={setUserGoal}

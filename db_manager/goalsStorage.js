@@ -51,7 +51,7 @@ export async function getGoalWithDate(date) {
     // db = await databaseInitialization();
 
     const goalDates = await db.getAllAsync('SELECT * FROM goals WHERE goals.date=?', [date]);
-    // console.log("Goal dates is " + goalDates);
+    console.log("Goal dates is " + goalDates);
     return goalDates;
 };
 
