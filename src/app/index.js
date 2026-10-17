@@ -1,3 +1,4 @@
+import { SymbolView } from 'expo-symbols';
 import { useEffect, useState } from 'react';
 import { Button, FlatList, Pressable, ScrollView, StatusBar, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
@@ -31,7 +32,7 @@ const Main = () => {
 
     //Database issues solved, trying to get this to load properly now... https://www.dbpro.app/blog/expo-sqlite
     async function loadCurrentGoals() {
-        const currentGoals = await getGoalWithDate(day);
+        const currentGoals = await getGoalWithDate(sqliteDay);
         setDailyGoals(currentGoals);
         console.log(dailyGoals);
     }
@@ -41,8 +42,18 @@ const Main = () => {
             <SafeAreaView>
                 <ScrollView>
 
-                    <View>
+                    <View style={styles.header}>
+                        <SymbolView
+                            name={{ios:'arrow.backward', android:'arrow_back', web:'arrow_back'}}
+                            tintColor="#36454F"
+                            size={20}
+                        />
                         <Text> {sqliteDay} </Text>
+                        <SymbolView
+                            name={{ios:'arrow.forward', android:'arrow_forward', web:'arrow_forward'}}
+                            tintColor="#36454F"
+                            size={20}
+                        />
 
                     </View>
 
@@ -70,11 +81,14 @@ const Main = () => {
                     </Pressable>
 
                 </ScrollView>
+
                 <FlatList
                     data={dailyGoals}
                     renderItem={({ item }) => <GoalDisplay goalText={item.goalText} />}
                     keyExtractor={(item) => item.id.toString()}
+                    // extraData={this.state}
                 />
+
             </SafeAreaView>
         </SafeAreaProvider>
     );
@@ -90,6 +104,9 @@ const styles = StyleSheet.create({
         margin: 12,
         borderWidth: 1,
         padding: 10,
+    },
+    header:{
+        flexDirection: 'row',
     }
 })
 
