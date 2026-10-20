@@ -1,7 +1,8 @@
 import { SymbolView } from 'expo-symbols';
 import { useEffect, useState } from 'react';
-import { Button, FlatList, Pressable, ScrollView, StatusBar, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Button, FlatList, Pressable, ScrollView, StatusBar, StyleSheet, Switch, Text, TextInput, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { isEnabled } from 'react-native/Libraries/Performance/Systrace';
 import { getGoalWithDate, initDatabase, setGoal } from '../../db_manager/goalsStorage';
 
 {/*
@@ -12,6 +13,11 @@ import { getGoalWithDate, initDatabase, setGoal } from '../../db_manager/goalsSt
 const GoalDisplay = ({ goalText }) => (
     <View>
         <Text>{goalText}</Text>
+        <Switch
+            trackColor={{false:'#757577', true: '#91b0ff'}}
+            thumbColor={isEnabled ?  '#f5dd4b' : '#f4f3f4'}
+            // onValueChange={}
+        />
         {/* Insert button to say if accomplished or not here */}
     </View>
 );
@@ -31,11 +37,11 @@ const Main = () => {
     }, []);
 
     //Database issues solved, trying to get this to load properly now... https://www.dbpro.app/blog/expo-sqlite
-    async function loadCurrentGoals() {
-        const currentGoals = await getGoalWithDate(sqliteDay);
-        setDailyGoals(currentGoals);
-        console.log(dailyGoals);
-    }
+    // async function loadCurrentGoals() {
+    //     const currentGoals = await getGoalWithDate(sqliteDay);
+    //     setDailyGoals(currentGoals);
+    //     console.log(dailyGoals);
+    // }
 
     async function loadDailyGoals(){                  
         await  setGoal(userGoal, sqliteDay, false);
@@ -75,10 +81,7 @@ const Main = () => {
                         <Button
                             onPress={() => {
                                 loadDailyGoals()
-                                // setGoal(userGoal, sqliteDay, false);
-                                // allRows();
-                                // loadCurrentGoals();
-                                // console.log(sqliteDay);
+                                
                             }
                             }
                             title="Enter"
