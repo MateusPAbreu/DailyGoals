@@ -37,6 +37,12 @@ const Main = () => {
         console.log(dailyGoals);
     }
 
+    async function loadDailyGoals(){                  
+        await  setGoal(userGoal, sqliteDay, false);
+        const currentGoals = await getGoalWithDate(sqliteDay);
+        setDailyGoals(currentGoals);
+    }
+
     return (
         <SafeAreaProvider style={styles.container}>
             <SafeAreaView>
@@ -44,13 +50,13 @@ const Main = () => {
 
                     <View style={styles.header}>
                         <SymbolView
-                            name={{ios:'arrow.backward', android:'arrow_back', web:'arrow_back'}}
+                            name={{ ios: 'arrow.backward', android: 'arrow_back', web: 'arrow_back' }}
                             tintColor="#36454F"
                             size={20}
                         />
                         <Text> {sqliteDay} </Text>
                         <SymbolView
-                            name={{ios:'arrow.forward', android:'arrow_forward', web:'arrow_forward'}}
+                            name={{ ios: 'arrow.forward', android: 'arrow_forward', web: 'arrow_forward' }}
                             tintColor="#36454F"
                             size={20}
                         />
@@ -68,7 +74,8 @@ const Main = () => {
                         />
                         <Button
                             onPress={() => {
-                                setGoal(userGoal, sqliteDay, false);
+                                loadDailyGoals()
+                                // setGoal(userGoal, sqliteDay, false);
                                 // allRows();
                                 // loadCurrentGoals();
                                 // console.log(sqliteDay);
@@ -84,9 +91,10 @@ const Main = () => {
 
                 <FlatList
                     data={dailyGoals}
-                    renderItem={({ item }) => <GoalDisplay goalText={item.goalText} />}
+                    // renderItem={({ item }) => renderData(item)}
                     keyExtractor={(item) => item.id.toString()}
-                    // extraData={this.state}
+                    renderItem={({ item }) => <GoalDisplay goalText={item.goalText} />}
+                    // extraData={dailyGoals}
                 />
 
             </SafeAreaView>
@@ -105,7 +113,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         padding: 10,
     },
-    header:{
+    header: {
         flexDirection: 'row',
     }
 })
