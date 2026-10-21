@@ -47,11 +47,16 @@ export async function getGoal(id) {
     return goal;
 };
 
+export async function setAccomplished(goalText, id){
+    await db.runAsync('UPDATE goals SET accomplished = CASE WHEN accomplished = 1 THEN 0 ELSE 1 END WHERE goals.goalText=? AND goals.id=?', [goalText, id])
+    console.log(goalText + "accomplished")
+}
+
 export async function getGoalWithDate(date) {
     // db = await databaseInitialization();
 
     const goalDates = await db.getAllAsync('SELECT * FROM goals WHERE goals.date=?', [date]);
-    console.log("Goal dates is " + date);
+    console.log(goalDates);
     return goalDates;
 };
 
