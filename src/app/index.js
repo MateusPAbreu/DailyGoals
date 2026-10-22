@@ -15,6 +15,8 @@ const setGoalTrue = async (goalText, id) => {
     setAccomplished(goalText, id);
 }
 
+//need some sort of useState and useEffect to update it
+
 //Need to update the accomplished according to how it is on the database
 const GoalDisplay = ({ goalText, id, accomplished }) => (
     <View>
