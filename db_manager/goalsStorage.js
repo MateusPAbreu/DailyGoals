@@ -49,7 +49,7 @@ export async function getGoal(id) {
 
 export async function setAccomplished(goalText, id){
     await db.runAsync('UPDATE goals SET accomplished = CASE WHEN accomplished = 1 THEN 0 ELSE 1 END WHERE goals.goalText=? AND goals.id=?', [goalText, id])
-    // console.log(goalText + "accomplished")
+    console.log(goalText + "accomplished")
 }
 
 export async function getAccomplished(id){

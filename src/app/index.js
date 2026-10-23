@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { Button, FlatList, Pressable, ScrollView, StatusBar, StyleSheet, Switch, Text, TextInput, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 // import { isEnabled } from 'react-native/Libraries/Performance/Systrace';
-import { getGoalWithDate, initDatabase, setAccomplished, setGoal } from '../../db_manager/goalsStorage';
+import { getAccomplished, getGoalWithDate, initDatabase, setAccomplished, setGoal } from '../../db_manager/goalsStorage';
 
 {/*
     TODO:
@@ -11,32 +11,14 @@ import { getGoalWithDate, initDatabase, setAccomplished, setGoal } from '../../d
 */}
 
 
-const setGoalTrue = async (goalText, id) => {
-    setAccomplished(goalText, id);
-}
 
-//need some sort of useState and useEffect to update it
-
-//Need to update the accomplished according to how it is on the database
-const GoalDisplay = ({ goalText, id, accomplished }) => (
-    <View>
-        <Text>{goalText}</Text>
-        <Switch
-            // disabled=false
-            value={accomplished}
-            trackColor={{false:'#757577', true: '#91b0ff'}}
-            thumbColor={'#f5dd4b'}
-            onValueChange={() => setGoalTrue(goalText, id)}
-            //on Value Change call the method that will define the goal as true or false
-        />
-        {/* Insert button to say if accomplished or not here */}
-    </View>
-);
 
 const Main = () => {
     // clearDatabase();
     initDatabase();
     const [userGoal, setUserGoal] = useState('Set a goal for the day!');
+    const [accomp, setAccomp] = useState({});
+    //Use this new map use state to map each id to a switch
     const [dailyGoals, setDailyGoals] = useState([]);
     const day = new Date();
     // const currentGoals = await getGoalWithDate(day);
@@ -47,16 +29,60 @@ const Main = () => {
         loadCurrentGoals();
     }, []);
 
+    const goalAccomplished = (goalText, id) => {
+        useEffect(() => {
+            async function setGoalTrue(goalText, id) {
+                setAccomplished(goalText, id);
+                const accomp = await getAccomplished(id);
+                return accomp
+
+               
+            }
+            setGoalTrue(goalText, id);
+        }, [])
+    }
+
+
+
+
+
+    //need some sort of useState and useEffect to update it
+
+    //Need to update the accomplished according to how it is on the database
+    const GoalDisplay = ({ goalText, id, accomplished }) => {
+
+        useEffect(() => async () => {
+            const acccomplishment = await getAccomplished(id);
+            setAccomp(acccomplishment);
+            // console.log("Use Effect " + accomp);
+        }, []);
+
+        return (
+            <View>
+                <Text>{goalText}</Text>
+                <Switch
+                    // disabled=false
+                    value={accomp === 1}
+                    trackColor={{ false: '#757577', true: '#91b0ff' }}
+                    thumbColor={'#f5dd4b'}
+                    onValueChange={goalAccomplished(goalText, id)}
+                //on Value Change call the method that will define the goal as true or false
+                />
+                {/* Insert button to say if accomplished or not here */}
+            </View>
+        )
+    }
+
     //Database issues solved, trying to get this to load properly now... https://www.dbpro.app/blog/expo-sqlite
     async function loadCurrentGoals() {
         const currentGoals = await getGoalWithDate(sqliteDay);
         setDailyGoals(currentGoals);
         // console.log(currentGoals)
-        console.log(dailyGoals);
+        // console.log(dailyGoals);
     }
 
-    async function loadDailyGoals(){                  
-        await  setGoal(userGoal, sqliteDay, false);
+    async function loadDailyGoals() {
+        await setGoal(userGoal, sqliteDay, false);
         const currentGoals = await getGoalWithDate(sqliteDay);
         setDailyGoals(currentGoals);
     }
@@ -93,7 +119,7 @@ const Main = () => {
                         <Button
                             onPress={() => {
                                 loadDailyGoals()
-                                
+
                             }
                             }
                             title="Enter"
@@ -108,10 +134,10 @@ const Main = () => {
                     data={dailyGoals}
                     // renderItem={({ item }) => renderData(item)}
                     keyExtractor={(item) => item.id.toString()}
-                    renderItem={({ item }) => <GoalDisplay goalText={item.goalText} 
-                                id={item.id} 
-                                accomplished={item.accomplished} />}
-                    // extraData={dailyGoals}
+                    renderItem={({ item }) => <GoalDisplay goalText={item.goalText}
+                        id={item.id}
+                        accomplished={item.accomplished} />}
+                // extraData={dailyGoals}
                 />
 
             </SafeAreaView>
