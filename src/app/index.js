@@ -41,7 +41,7 @@ const Main = () => {
 
 
         return (
-            <View>
+            <View style={[accomp[id] ? styles.goalAccomp :  styles.goalNotAccomp]}>
                 <Text>{goalText}</Text>
                 <Switch
                     
@@ -159,6 +159,12 @@ const styles = StyleSheet.create({
     },
     header: {
         flexDirection: 'row',
+    },
+    goalNotAccomp:{
+        backgroundColor: '#ff4500'
+    },
+    goalAccomp:{
+        backgroundColor: '#adff2f'
     }
 })
 
