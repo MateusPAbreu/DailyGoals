@@ -29,21 +29,39 @@ const Main = () => {
         loadCurrentGoals();
     }, []);
 
-    const goalAccomplished = (goalText, id) => {
-        useEffect(() => {
-            async function setGoalTrue(goalText, id) {
+    async function setGoalTrue(goalText, id) {
                 setAccomplished(goalText, id);
-                const accomp = await getAccomplished(id);
-                return accomp
+                const accomplishment = await getAccomplished(id);
+                setAccomp(prevState => ({
+                    ...prevState,
+                    [id]: accomplishment
+                }));
+                console.log(accomplishment)
+                return accomp[id];
 
-               
             }
-            setGoalTrue(goalText, id);
-        }, [])
-    }
 
+    // const goalAccomplished = (goalText, id) => {
+    //     useEffect(() => {
+      
+    //         async function setGoalTrue(goalText, id) {
+    //             setAccomplished(goalText, id);
+    //             const accomplishment = await getAccomplished(id);
+    //             setAccomp(prevState => ({
+    //                 ...prevState,
+    //                 [id]: accomplishment
+    //             }));
+    //             console.log(accomplishment)
+    //             return accomp[id];
 
-
+    //         }
+    //         // if (accomp === 1) {
+    //         //     console.log("Hello")
+    //         //     setGoalTrue(goalText, id);
+    //         // }
+    //         setGoalTrue(goalText, id);
+    //     }, [])
+    // }
 
 
     //need some sort of useState and useEffect to update it
@@ -51,21 +69,22 @@ const Main = () => {
     //Need to update the accomplished according to how it is on the database
     const GoalDisplay = ({ goalText, id, accomplished }) => {
 
-        useEffect(() => async () => {
-            const acccomplishment = await getAccomplished(id);
-            setAccomp(acccomplishment);
-            // console.log("Use Effect " + accomp);
-        }, []);
+        // useEffect(() => async () => {
+        //     const acccomplishment = await getAccomplished(id);
+        //     setAccomp(acccomplishment);
+        //     // console.log("Use Effect " + accomp);
+        // }, []);
 
         return (
             <View>
                 <Text>{goalText}</Text>
                 <Switch
-                    // disabled=false
-                    value={accomp === 1}
+                    
+                    //Check how to access a map in JavaScript
+                    value={accomp[id] === 1}
                     trackColor={{ false: '#757577', true: '#91b0ff' }}
                     thumbColor={'#f5dd4b'}
-                    onValueChange={goalAccomplished(goalText, id)}
+                    onValueChange={() => setGoalTrue(goalText, id)}
                 //on Value Change call the method that will define the goal as true or false
                 />
                 {/* Insert button to say if accomplished or not here */}
