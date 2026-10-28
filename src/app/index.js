@@ -17,45 +17,63 @@ const Main = () => {
     //Use this new map use state to map each id to a switch
     const [dailyGoals, setDailyGoals] = useState([]);
     const day = new Date();
+    const [sqlDay, setSqlDay] = useState(day.toISOString().split('T')[0]);
     // const currentGoals = await getGoalWithDate(day);
     let sqliteDay = day.toISOString().split('T')[0];
+    // setSqlDay(sqliteDay);
     //Need to learn why date is not transferring over...
 
     useEffect(() => {
         loadCurrentGoals();
+        // prevDay();
     }, []);
 
-    async function setGoalTrue(goalText, id) {
-                setAccomplished(goalText, id);
-                const accomplishment = await getAccomplished(id);
-                setAccomp(prevState => ({
-                    ...prevState,
-                    [id]: accomplishment
-                }));
-                console.log(accomplishment)
-                return accomp[id];
+    function prevDay() {
+        let previousDay = sqliteDay.slice(-2);
+        let previousDayNum = parseInt(previousDay) - 1;
+        console.log("Prev day " + previousDay)
+        sqliteDay = sqliteDay.replace(previousDay, previousDayNum.toString());
+        setSqlDay(sqliteDay);
+        console.log("SQL day " + sqliteDay)
+    }
 
-            }
+    function nextDay() {
+
+    }
+
+    // prevDay();
+
+    async function setGoalTrue(goalText, id) {
+        setAccomplished(goalText, id);
+        const accomplishment = await getAccomplished(id);
+        setAccomp(prevState => ({
+            ...prevState,
+            [id]: accomplishment
+        }));
+        console.log(accomplishment)
+        return accomp[id];
+
+    }
 
     const GoalDisplay = ({ goalText, id, accomplished }) => {
 
 
         return (
-            <View style={[accomp[id] ? styles.goalAccomp :  styles.goalNotAccomp]}>
+            <View style={[accomp[id] ? styles.goalAccomp : styles.goalNotAccomp]}>
                 <Text>{goalText}</Text>
                 <Switch
-                    
+
                     value={accomp[id] === 1}
                     trackColor={{ false: '#757577', true: '#91b0ff' }}
                     thumbColor={'#f5dd4b'}
                     onValueChange={() => setGoalTrue(goalText, id)}
-                
+
                 />
             </View>
         )
     }
 
- 
+
     async function loadCurrentGoals() {
         const currentGoals = await getGoalWithDate(sqliteDay);
         setDailyGoals(currentGoals);
@@ -67,39 +85,43 @@ const Main = () => {
         setDailyGoals(currentGoals);
     }
 
-    function ConfigureScreen(){
+    function ConfigureScreen() {
         const navigation = useNavigation();
 
-        return(
-           <Pressable 
-            onPress={() =>
-                navigation.navigate("Configure")
-            }>
+        return (
+            <Pressable
+                onPress={() =>
+                    navigation.navigate("Configure")
+                }>
                 <SymbolView
-                    name={{ios: 'settings', android: 'settings', web: 'settings'}}
+                    name={{ ios: 'settings', android: 'settings', web: 'settings' }}
                     size={40}
                 />
-           </Pressable>
+            </Pressable>
         )
     }
 
     return (
-        
+
         <SafeAreaProvider style={styles.container}>
             <SafeAreaView>
                 <ScrollView>
 
                     <NavigationContainer>
-                        <ConfigureScreen/>
+                        <ConfigureScreen />
                     </NavigationContainer>
 
                     <View style={styles.header}>
-                        <SymbolView
-                            name={{ ios: 'arrow.backward', android: 'arrow_back', web: 'arrow_back' }}
-                            tintColor="#36454F"
-                            size={20}
-                        />
-                        <Text> {sqliteDay} </Text>
+                        <Pressable
+                            onPress={() => prevDay()}
+                        >
+                            <SymbolView
+                                name={{ ios: 'arrow.backward', android: 'arrow_back', web: 'arrow_back' }}
+                                tintColor="#36454F"
+                                size={20}
+                            />
+                        </Pressable>
+                        <Text> {sqlDay} </Text>
                         <SymbolView
                             name={{ ios: 'arrow.forward', android: 'arrow_forward', web: 'arrow_forward' }}
                             tintColor="#36454F"
@@ -160,10 +182,10 @@ const styles = StyleSheet.create({
     header: {
         flexDirection: 'row',
     },
-    goalNotAccomp:{
+    goalNotAccomp: {
         backgroundColor: '#ff4500'
     },
-    goalAccomp:{
+    goalAccomp: {
         backgroundColor: '#adff2f'
     }
 })
