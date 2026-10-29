@@ -1,15 +1,17 @@
 import { useNavigation } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import { useState } from 'react';
-import { Pressable, Text, TextInput, View } from 'react-native';
+import { Button, Pressable, Text, TextInput, View } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { setNot } from '../../db_manager/configStorage';
 
 
 const Configure = () => {
 
-    const [firstNotification, setFirstNotification] = useState();
+    const getNotified = false;
     const dayTime = [ {label: "am", value: "am"}, {label: "pm", value:"pm"}]
+    const [firstNotification, setFirstNotification] = useState();
     const [firstTime, setFirstTime] = useState();
     const [lastNotification, setLastNotification] = useState();
     const [lastTime, setLastTime] = useState();
@@ -18,6 +20,17 @@ const Configure = () => {
     // const hourTime = [
     //     {label: pm, value: }
     // ];
+    async function setUpNotification(){
+        if(getNotified){
+            if(firstTime > 12 || firstTime < 0 && lastTime > 12 || lastTime < 0){
+                console.log("Numbers not acceptable")
+            }else{
+                const firstN = firstTime + " " + firstNotification;
+                const lastN = lastTime + " " + lastNotification;
+                setNot(firstN, lastN);
+            }
+        }
+    }
 
 
     const ReturnHome = () => {
@@ -80,7 +93,13 @@ const Configure = () => {
                     />
                 </View>
 
-
+                <View>
+                    <Button
+                        onPress={() => setUpNotification()}
+                        title="Set config"
+                        
+                    />
+                </View>
 
             </SafeAreaView>
         </SafeAreaProvider>

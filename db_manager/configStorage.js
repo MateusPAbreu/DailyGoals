@@ -36,3 +36,11 @@ export async function allRows(){
     console.log("Current goals: ", JSON.stringify(goals, null, 2));
 };
 
+export async function setNot(firstNot, lastNot){
+    const notifications = await db.runAsync(
+        'INSERT INTO config (firstNot, lastNot) VALUES (?, ?);',
+        [firstNot, lastNot]
+    );
+
+    return notifications.lastInsertRowId;
+}
