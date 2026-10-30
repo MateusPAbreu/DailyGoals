@@ -15,6 +15,7 @@ const Main = () => {
     const [userGoal, setUserGoal] = useState('Set a goal for the day!');
     const [accomp, setAccomp] = useState({});
     const [allGoals, setAllGoals] = useState();
+    const [dailyPercent, setDailyPercent] = useState();
     //Use this new map use state to map each id to a switch
     const [dailyGoals, setDailyGoals] = useState([]);
     const day = new Date();
@@ -52,7 +53,10 @@ const Main = () => {
         for(let i =0; i< allDailyGoals.length; i++){
             percentage += allDailyGoals[i];
         }
-        // console.log(allDailyGoals);
+        percentage = percentage/allDailyGoals.length;
+        // console.log(percentage);
+
+        setDailyPercent(percentage);
     }
 
     async function setGoalTrue(goalText, id) {
@@ -125,7 +129,7 @@ const Main = () => {
                     </NavigationContainer>
 
                     <View>
-                        <Text>{allGoals}</Text>
+                        <Text>{dailyPercent}</Text>
                     </View>
 
                     <View style={styles.header}>
