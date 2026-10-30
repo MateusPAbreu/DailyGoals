@@ -43,9 +43,15 @@ export async function allRows(){
 
 export async function getGoal(id) {
     const goal = db.prepare('SELECT * FROM goals WHERE goals.id=?', [id]);
-
     return goal;
 };
+
+export async function getAllGoalsDaily(date) {
+    const allGoals = await db.getAllAsync('SELECT accomplished FROM goals WHERE goals.date=?', [date]);
+    console.log(allGoals)
+    const allGoalsValue = allGoals.map(row => row.accomplished);
+    return allGoalsValue;
+}
 
 export async function setAccomplished(goalText, id){
     await db.runAsync('UPDATE goals SET accomplished = CASE WHEN accomplished = 1 THEN 0 ELSE 1 END WHERE goals.goalText=? AND goals.id=?', [goalText, id])

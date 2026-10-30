@@ -5,7 +5,7 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 // import { isEnabled } from 'react-native/Libraries/Performance/Systrace';
 import { NavigationContainer } from '@react-navigation/native';
 import { useNavigation } from 'expo-router';
-import { getAccomplished, getGoalWithDate, initDatabase, setAccomplished, setGoal } from '../../db_manager/goalsStorage';
+import { getAccomplished, getAllGoalsDaily, getGoalWithDate, initDatabase, setAccomplished, setGoal } from '../../db_manager/goalsStorage';
 
 
 const Main = () => {
@@ -14,34 +14,46 @@ const Main = () => {
     initDatabase();
     const [userGoal, setUserGoal] = useState('Set a goal for the day!');
     const [accomp, setAccomp] = useState({});
+    const [allGoals, setAllGoals] = useState();
     //Use this new map use state to map each id to a switch
     const [dailyGoals, setDailyGoals] = useState([]);
     const day = new Date();
-    const [sqlDay, setSqlDay] = useState(day.toISOString().split('T')[0]);
-    // const currentGoals = await getGoalWithDate(day);
     let sqliteDay = day.toISOString().split('T')[0];
+    const [sqlDay, setSqlDay] = useState();
+    // const currentGoals = await getGoalWithDate(day);
     // setSqlDay(sqliteDay);
     //Need to learn why date is not transferring over...
 
     useEffect(() => {
+        setSqlDay(sqliteDay);
         loadCurrentGoals();
+        
         // prevDay();
     }, []);
 
     function prevDay() {
         let previousDay = sqliteDay.slice(-2);
         let previousDayNum = parseInt(previousDay) - 1;
-        console.log("Prev day " + previousDay)
+        // console.log("Prev day " + previousDay)
         sqliteDay = sqliteDay.replace(previousDay, previousDayNum.toString());
         setSqlDay(sqliteDay);
-        console.log("SQL day " + sqliteDay)
+        // console.log("SQL day " + sqliteDay);
     }
 
     function nextDay() {
 
     }
 
-    // prevDay();
+    async function dailyGoalsPercentage(){
+        // console.log(day);
+        const allDailyGoals = await getAllGoalsDaily(sqlDay);
+        setAllGoals(allDailyGoals);
+        let percentage = 0;
+        for(let i =0; i< allDailyGoals.length; i++){
+            percentage += allDailyGoals[i];
+        }
+        // console.log(allDailyGoals);
+    }
 
     async function setGoalTrue(goalText, id) {
         setAccomplished(goalText, id);
@@ -50,7 +62,8 @@ const Main = () => {
             ...prevState,
             [id]: accomplishment
         }));
-        console.log(accomplishment)
+        dailyGoalsPercentage();
+        // console.log(accomplishment)
         return accomp[id];
 
     }
@@ -111,9 +124,13 @@ const Main = () => {
                         <ConfigureScreen />
                     </NavigationContainer>
 
+                    <View>
+                        <Text>{allGoals}</Text>
+                    </View>
+
                     <View style={styles.header}>
                         <Pressable
-                            onPress={() => prevDay()}
+                        // onPress={() => prevDay()}
                         >
                             <SymbolView
                                 name={{ ios: 'arrow.backward', android: 'arrow_back', web: 'arrow_back' }}
@@ -141,8 +158,8 @@ const Main = () => {
                         />
                         <Button
                             onPress={() => {
-                                loadDailyGoals()
-
+                                loadDailyGoals();
+                                dailyGoalsPercentage();
                             }
                             }
                             title="Enter"
