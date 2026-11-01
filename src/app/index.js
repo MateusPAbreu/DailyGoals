@@ -90,7 +90,7 @@ const Main = () => {
         )
     }
 
-
+    //Since there's no goal on the first time, there'll be an uncaught promise
     async function loadCurrentGoals() {
         const currentGoals = await getGoalWithDate(sqliteDay);
         setDailyGoals(currentGoals);

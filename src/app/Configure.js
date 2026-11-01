@@ -1,7 +1,7 @@
 import { useNavigation } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import { useState } from 'react';
-import { Button, Pressable, Text, TextInput, View } from 'react-native';
+import { Button, Pressable, Switch, Text, TextInput, View } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { setNot } from '../../db_manager/configStorage';
@@ -10,21 +10,22 @@ import { setNot } from '../../db_manager/configStorage';
 const Configure = () => {
 
     const getNotified = false;
-    const dayTime = [ {label: "am", value: "am"}, {label: "pm", value:"pm"}]
+    const dayTime = [{ label: "am", value: "am" }, { label: "pm", value: "pm" }]
     const [firstNotification, setFirstNotification] = useState();
     const [firstTime, setFirstTime] = useState();
     const [lastNotification, setLastNotification] = useState();
     const [lastTime, setLastTime] = useState();
+    const [exposePerc, setExpoPerc] = useState(true);
 
-    
+
     // const hourTime = [
     //     {label: pm, value: }
     // ];
-    async function setUpNotification(){
-        if(getNotified){
-            if(firstTime > 12 || firstTime < 0 && lastTime > 12 || lastTime < 0){
+    async function setUpNotification() {
+        if (getNotified) {
+            if (firstTime > 12 || firstTime < 0 && lastTime > 12 || lastTime < 0) {
                 console.log("Numbers not acceptable")
-            }else{
+            } else {
                 const firstN = firstTime + " " + firstNotification;
                 const lastN = lastTime + " " + lastNotification;
                 setNot(firstN, lastN);
@@ -83,7 +84,7 @@ const Configure = () => {
                         text={lastNotification}
                     >
                     </TextInput>
-                     <Dropdown
+                    <Dropdown
                         data={dayTime}
                         labelField="label"
                         valueField="value"
@@ -97,7 +98,14 @@ const Configure = () => {
                     <Button
                         onPress={() => setUpNotification()}
                         title="Set config"
-                        
+
+                    />
+
+                    <Switch
+                        value={exposePerc}
+                        trackColor={{ false: '#757577', true: '#91b0ff' }}
+                        thumbColor={'#f5dd4b'}
+                        onValueChange={() => setExpoPerc(!exposePerc)}
                     />
                 </View>
 
