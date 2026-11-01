@@ -47,8 +47,8 @@ export async function getGoal(id) {
 };
 
 export async function getAllGoalsDaily(date) {
+
     const allGoals = await db.getAllAsync('SELECT accomplished FROM goals WHERE goals.date=?', [date]);
-    console.log(allGoals)
     const allGoalsValue = allGoals.map(row => row.accomplished);
     return allGoalsValue;
 }

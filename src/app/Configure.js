@@ -7,7 +7,12 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { setNot } from '../../db_manager/configStorage';
 
 
-const Configure = () => {
+export function getExposePercentage(perc) {
+    console.log("Perc "+perc)
+    return perc;
+};
+
+function Configure() {
 
     const getNotified = false;
     const dayTime = [{ label: "am", value: "am" }, { label: "pm", value: "pm" }]
@@ -15,12 +20,9 @@ const Configure = () => {
     const [firstTime, setFirstTime] = useState();
     const [lastNotification, setLastNotification] = useState();
     const [lastTime, setLastTime] = useState();
-    const [exposePerc, setExpoPerc] = useState(true);
+    const [showPerc, setShowPerc] = useState(true);
 
 
-    // const hourTime = [
-    //     {label: pm, value: }
-    // ];
     async function setUpNotification() {
         if (getNotified) {
             if (firstTime > 12 || firstTime < 0 && lastTime > 12 || lastTime < 0) {
@@ -32,6 +34,8 @@ const Configure = () => {
             }
         }
     }
+
+
 
 
     const ReturnHome = () => {
@@ -102,10 +106,17 @@ const Configure = () => {
                     />
 
                     <Switch
-                        value={exposePerc}
+                        value={showPerc}
                         trackColor={{ false: '#757577', true: '#91b0ff' }}
                         thumbColor={'#f5dd4b'}
-                        onValueChange={() => setExpoPerc(!exposePerc)}
+                        onValueChange={
+                            () => setShowPerc(!showPerc)
+                            // getExposePercentage(showPerc)
+
+                        }
+                        onChange={
+                            () => getExposePercentage(showPerc)
+                        }
                     />
                 </View>
 
@@ -114,5 +125,6 @@ const Configure = () => {
 
     );
 }
+
 
 export default Configure;

@@ -6,6 +6,7 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 import { useNavigation } from 'expo-router';
 import { getAccomplished, getAllGoalsDaily, getGoalWithDate, initDatabase, setAccomplished, setGoal } from '../../db_manager/goalsStorage';
+import { getExposePercentage } from './Configure';
 
 
 const Main = () => {
@@ -27,7 +28,7 @@ const Main = () => {
 
     useEffect(() => {
         setSqlDay(sqliteDay);
-        loadCurrentGoals();
+        () => loadCurrentGoals();
         
         // prevDay();
     }, []);
@@ -102,6 +103,14 @@ const Main = () => {
         setDailyGoals(currentGoals);
     }
 
+    function Percent(){
+        const showPerc = getExposePercentage();
+        if (showPerc){      
+            return <Text>{dailyPercent}</Text>
+        }
+        
+    }
+
     function ConfigureScreen() {
         const navigation = useNavigation();
 
@@ -129,7 +138,7 @@ const Main = () => {
                     </NavigationContainer>
 
                     <View>
-                        <Text>{dailyPercent}</Text>
+                        <Text>{Percent()}</Text>
                     </View>
 
                     <View style={styles.header}>
