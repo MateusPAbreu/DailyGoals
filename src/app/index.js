@@ -1,10 +1,10 @@
 import { SymbolView } from 'expo-symbols';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Button, FlatList, Pressable, ScrollView, StatusBar, StyleSheet, Switch, Text, TextInput, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 // import { isEnabled } from 'react-native/Libraries/Performance/Systrace';
 import { NavigationContainer } from '@react-navigation/native';
-import { useNavigation } from 'expo-router';
+import { useFocusEffect, useNavigation } from 'expo-router';
 import { getAccomplished, getAllGoalsDaily, getGoalWithDate, initDatabase, setAccomplished, setGoal } from '../../db_manager/goalsStorage';
 import { showPercent } from './Configure';
 
@@ -16,6 +16,7 @@ const Main = () => {
     const [accomp, setAccomp] = useState({});
     const [allGoals, setAllGoals] = useState();
     const [dailyPercent, setDailyPercent] = useState();
+
     //Use this new map use state to map each id to a switch
     const [dailyGoals, setDailyGoals] = useState([]);
     const day = new Date();
@@ -26,10 +27,26 @@ const Main = () => {
     // setSqlDay(sqliteDay);
     //Need to learn why date is not transferring over...
 
+    // useFocusEffect(
+    //     useCallback(
+    //         async () => {
+    //             // loadDailyGoals();
+    //             // dailyGoalsPercentage();
+    //             return null;
+    //         }
+
+    //     )
+    //     // loadDailyGoals();
+    //     // dailyGoalsPercentage();
+    // )
+
     useEffect(() => {
         setSqlDay(sqliteDay);
-        () => loadCurrentGoals();
-        
+        () => {
+            loadCurrentGoals();
+            // loadDailyGoals();
+        }
+
         // prevDay();
     }, []);
 
@@ -46,15 +63,15 @@ const Main = () => {
 
     }
 
-    async function dailyGoalsPercentage(){
-        // console.log(day);
+    async function dailyGoalsPercentage() {
+
         const allDailyGoals = await getAllGoalsDaily(sqlDay);
         setAllGoals(allDailyGoals);
         let percentage = 0;
-        for(let i =0; i< allDailyGoals.length; i++){
+        for (let i = 0; i < allDailyGoals.length; i++) {
             percentage += allDailyGoals[i];
         }
-        percentage = percentage/allDailyGoals.length;
+        percentage = percentage / allDailyGoals.length;
         // console.log(percentage);
 
         setDailyPercent(percentage);
@@ -101,21 +118,25 @@ const Main = () => {
         await setGoal(userGoal, sqliteDay, false);
         const currentGoals = await getGoalWithDate(sqliteDay);
         setDailyGoals(currentGoals);
+        console.log("Daily goals second " + dailyGoals)
+
     }
 
-    function supportPercent(){
+    function supportPercent() {
         setShowPerc(showPercent());
     }
 
-    function Percent(){
+    function Percent() {
         supportPercent()
-        console.log("Inside percent "+ showPerc + " " +dailyPercent)
-        if (showPerc && dailyGoals.length > 0) {      
-            return( <Text>{dailyPercent}</Text>)
-        } else{
-            return( <View></View>)
+        console.log("Inside percent " + showPerc + " " + dailyPercent)
+
+        if (showPerc && dailyGoals.length > 0) {
+            return (<Text>{dailyPercent}</Text>)
+
+        } else {
+            return (<View></View>)
         }
-        
+
     }
 
     function ConfigureScreen() {
@@ -134,6 +155,17 @@ const Main = () => {
         )
     }
 
+     useFocusEffect(
+        useCallback(
+            () => {
+                loadDailyGoals();
+                dailyGoalsPercentage();
+        
+            }, [])
+        // loadDailyGoals();
+        // dailyGoalsPercentage();
+    )
+
     return (
 
         <SafeAreaProvider style={styles.container}>
@@ -145,7 +177,7 @@ const Main = () => {
                     </NavigationContainer>
 
                     <View>
-                        <Percent/>
+                        <Percent />
                     </View>
 
                     <View style={styles.header}>
@@ -178,6 +210,7 @@ const Main = () => {
                         />
                         <Button
                             onPress={() => {
+
                                 loadDailyGoals();
                                 dailyGoalsPercentage();
                             }
