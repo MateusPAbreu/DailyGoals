@@ -6,8 +6,7 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 import { useNavigation } from 'expo-router';
 import { getAccomplished, getAllGoalsDaily, getGoalWithDate, initDatabase, setAccomplished, setGoal } from '../../db_manager/goalsStorage';
-import { getExposePercentage } from './Configure';
-
+import { showPercent } from './Configure';
 
 const Main = () => {
     // const navigation = useNavigation(); //Broke the app, worry about it later
@@ -22,6 +21,7 @@ const Main = () => {
     const day = new Date();
     let sqliteDay = day.toISOString().split('T')[0];
     const [sqlDay, setSqlDay] = useState();
+    const [showPerc, setShowPerc] = useState();
     // const currentGoals = await getGoalWithDate(day);
     // setSqlDay(sqliteDay);
     //Need to learn why date is not transferring over...
@@ -103,10 +103,17 @@ const Main = () => {
         setDailyGoals(currentGoals);
     }
 
+    function supportPercent(){
+        setShowPerc(showPercent());
+    }
+
     function Percent(){
-        const showPerc = getExposePercentage();
-        if (showPerc){      
-            return <Text>{dailyPercent}</Text>
+        supportPercent()
+        console.log("Inside percent "+ showPerc + " " +dailyPercent)
+        if (showPerc && dailyGoals.length > 0) {      
+            return( <Text>{dailyPercent}</Text>)
+        } else{
+            return( <View></View>)
         }
         
     }
@@ -138,7 +145,7 @@ const Main = () => {
                     </NavigationContainer>
 
                     <View>
-                        <Text>{Percent()}</Text>
+                        <Percent/>
                     </View>
 
                     <View style={styles.header}>

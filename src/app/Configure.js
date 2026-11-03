@@ -1,16 +1,24 @@
 import { useNavigation } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import { useState } from 'react';
-import { Button, Pressable, Switch, Text, TextInput, View } from 'react-native';
+import { Button, Pressable, Text, TextInput, View } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { setNot } from '../../db_manager/configStorage';
 
 
-export function getExposePercentage(perc) {
-    console.log("Perc "+perc)
-    return perc;
-};
+
+var showPerce = false;
+
+function changeShowPerc() {
+    console.log("Before " + showPerce)
+    showPerce = !showPerce;
+    console.log("After " + showPerce)
+}
+
+export function showPercent() {
+    return showPerce;
+}
 
 function Configure() {
 
@@ -20,7 +28,7 @@ function Configure() {
     const [firstTime, setFirstTime] = useState();
     const [lastNotification, setLastNotification] = useState();
     const [lastTime, setLastTime] = useState();
-    const [showPerc, setShowPerc] = useState(true);
+    const [buttonState, setButtonState] = useState(showPerce.toString());
 
 
     async function setUpNotification() {
@@ -36,7 +44,22 @@ function Configure() {
     }
 
 
+    const ShowPercentage = () => {
+        return (
 
+            <Button
+                onPress={
+                    () => {
+                        changeShowPerc();
+                        setButtonState(showPerce.toString());
+                    }
+                }
+                title={buttonState}
+            />
+
+        )
+
+    }
 
     const ReturnHome = () => {
         const navigation = useNavigation();
@@ -105,19 +128,7 @@ function Configure() {
 
                     />
 
-                    <Switch
-                        value={showPerc}
-                        trackColor={{ false: '#757577', true: '#91b0ff' }}
-                        thumbColor={'#f5dd4b'}
-                        onValueChange={
-                            () => setShowPerc(!showPerc)
-                            // getExposePercentage(showPerc)
-
-                        }
-                        onChange={
-                            () => getExposePercentage(showPerc)
-                        }
-                    />
+                    <ShowPercentage />
                 </View>
 
             </SafeAreaView>
