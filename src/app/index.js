@@ -12,7 +12,7 @@ const Main = () => {
     // const navigation = useNavigation(); //Broke the app, worry about it later
     // clearDatabase();
     initDatabase();
-    const [userGoal, setUserGoal] = useState('Set a goal for the day!');
+    const [userGoal, setUserGoal] = useState();
     const [accomp, setAccomp] = useState({});
     const [allGoals, setAllGoals] = useState();
     const [dailyPercent, setDailyPercent] = useState();
@@ -115,11 +115,14 @@ const Main = () => {
     }
 
     async function loadDailyGoals() {
-        await setGoal(userGoal, sqliteDay, false);
-        const currentGoals = await getGoalWithDate(sqliteDay);
-        setDailyGoals(currentGoals);
-        console.log("Daily goals second " + dailyGoals)
-
+        if (userGoal == null || userGoal == "") {
+            console.log("Insert goal");
+        } else {
+            await setGoal(userGoal, sqliteDay, false);
+            const currentGoals = await getGoalWithDate(sqliteDay);
+            setDailyGoals(currentGoals);
+            console.log("Daily goals second " + dailyGoals)
+        }
     }
 
     function supportPercent() {
@@ -155,15 +158,28 @@ const Main = () => {
         )
     }
 
-     useFocusEffect(
+    function GoalsList() {
+        if (dailyGoals.length > 0) {
+            return (
+                <FlatList
+                    data={dailyGoals}
+                    // renderItem={({ item }) => renderData(item)}
+                    keyExtractor={(item) => item.id.toString()}
+                    renderItem={({ item }) => <GoalDisplay goalText={item.goalText}
+                        id={item.id}
+                        accomplished={item.accomplished} />}
+                />
+            )
+        }
+    }
+
+    useFocusEffect(
         useCallback(
             () => {
                 loadDailyGoals();
                 dailyGoalsPercentage();
-        
+
             }, [])
-        // loadDailyGoals();
-        // dailyGoalsPercentage();
     )
 
     return (
@@ -199,6 +215,7 @@ const Main = () => {
 
                     </View>
 
+                    <View><Text>Set your goal:</Text></View>
                     <Pressable>
 
 
@@ -210,9 +227,12 @@ const Main = () => {
                         />
                         <Button
                             onPress={() => {
-
-                                loadDailyGoals();
-                                dailyGoalsPercentage();
+                                if (userGoal == "") {
+                                    console.log("Empty input")
+                                } else {
+                                    loadDailyGoals();
+                                    dailyGoalsPercentage();
+                                }
                             }
                             }
                             title="Enter"
@@ -223,7 +243,8 @@ const Main = () => {
 
                 </ScrollView>
 
-                <FlatList
+                <GoalsList />
+                {/* <FlatList
                     data={dailyGoals}
                     // renderItem={({ item }) => renderData(item)}
                     keyExtractor={(item) => item.id.toString()}
@@ -231,7 +252,7 @@ const Main = () => {
                         id={item.id}
                         accomplished={item.accomplished} />}
                 // extraData={dailyGoals}
-                />
+                /> */}
 
             </SafeAreaView>
         </SafeAreaProvider>
