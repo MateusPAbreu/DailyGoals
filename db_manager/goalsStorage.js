@@ -32,6 +32,8 @@ export async function initDatabase() {
         );
     `);
     }
+
+    return db;
 }
 
 
@@ -47,7 +49,7 @@ export async function getGoal(id) {
 };
 
 export async function getAllGoalsDaily(date) {
-
+    const db = await initDatabase();
     const allGoals = await db.getAllAsync('SELECT accomplished FROM goals WHERE goals.date=?', [date]);
     const allGoalsValue = allGoals.map(row => row.accomplished);
     return allGoalsValue;
@@ -66,6 +68,8 @@ export async function getAccomplished(id) {
 
 export async function getGoalWithDate(date) {
     // Check if current day has already established goals
+    const db = await initDatabase();
+
     console.log("Has goals "+date);
     const hasGoals = await db.runAsync('SELECT COUNT(*) FROM goals WHERE goals.date=?', [date]);
     console.log("Has goals "+ hasGoals.lastInsertRowId)

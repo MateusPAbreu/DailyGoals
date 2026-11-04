@@ -26,11 +26,20 @@ const Main = () => {
     const [showPerc, setShowPerc] = useState();
 
 
+    useFocusEffect(
+        useCallback(
+            () => {
+                loadDailyGoals();
+                dailyGoalsPercentage();
+                GoalsList();
+            }, [])
+    )
+
     useEffect(() => {
         setSqlDay(sqliteDay);
         () => {
             loadCurrentGoals();
-           
+            supportPercent();
         }
 
         // prevDay();
@@ -100,8 +109,8 @@ const Main = () => {
         setDailyGoals(currentGoals);
     }
 
-    async function settingGoal(){
-        if(userGoal != null){
+    async function settingGoal() {
+        if (userGoal != null) {
             await setGoal(userGoal, sqliteDay, false);
         }
     }
@@ -114,12 +123,16 @@ const Main = () => {
     }
 
     function supportPercent() {
-        setShowPerc(showPercent());
+        const percentValue = showPercent();
+        if (isNaN(percentValue) ){
+            setShowPerc(0);
+        }else{
+            setShowPerc(percentValue);
+        }
     }
 
     function Percent() {
         supportPercent()
-        // console.log("Inside percent " + showPerc + " " + dailyPercent)
 
         if (showPerc && dailyGoals.length > 0) {
             return (<Text>{dailyPercent}</Text>)
@@ -147,11 +160,11 @@ const Main = () => {
     }
 
     function GoalsList() {
-        if (dailyGoals == null){
+        if (dailyGoals == null) {
             return <View></View>
-        }else{
-        console.log(dailyGoals.length)
-     //this is kinda useless for the rendering problem, but keep it for check
+        } else {
+            console.log(dailyGoals.length)
+            //this is kinda useless for the rendering problem, but keep it for check
             return (
                 <FlatList
                     data={dailyGoals}
@@ -165,14 +178,7 @@ const Main = () => {
         }
     }
 
-    useFocusEffect(
-        useCallback(
-            () => {
-                loadDailyGoals();
-                dailyGoalsPercentage();
-                GoalsList();
-            }, [])
-    )
+
 
     return (
 
