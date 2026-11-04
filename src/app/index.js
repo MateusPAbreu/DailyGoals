@@ -37,9 +37,9 @@ const Main = () => {
 
     useEffect(() => {
         setSqlDay(sqliteDay);
+        supportPercent();
         () => {
             loadCurrentGoals();
-            supportPercent();
         }
 
         // prevDay();
@@ -68,6 +68,9 @@ const Main = () => {
         }
         percentage = percentage / allDailyGoals.length;
         // console.log(percentage);
+        if(isNaN(percentage)){
+            percentage = 0;
+        }
 
         setDailyPercent(percentage);
     }
@@ -124,15 +127,12 @@ const Main = () => {
 
     function supportPercent() {
         const percentValue = showPercent();
-        if (isNaN(percentValue) ){
-            setShowPerc(0);
-        }else{
-            setShowPerc(percentValue);
-        }
+        setShowPerc(percentValue);
+
     }
 
     function Percent() {
-        supportPercent()
+        // supportPercent()
 
         if (showPerc && dailyGoals.length > 0) {
             return (<Text>{dailyPercent}</Text>)
