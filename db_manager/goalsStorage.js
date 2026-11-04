@@ -5,8 +5,8 @@ const db_path = 'goals.db';
 
 let db = null;
 
-async function databaseInitialization(){
-    if (!db){
+async function databaseInitialization() {
+    if (!db) {
         db = await SQLite.openDatabaseAsync(db_path);
     }
     return db;
@@ -35,7 +35,7 @@ export async function initDatabase() {
 }
 
 
-export async function allRows(){
+export async function allRows() {
     const goals = await db.getAllAsync('SELECT * FROM goals');
     console.log("Current goals: ", JSON.stringify(goals, null, 2));
 };
@@ -53,32 +53,45 @@ export async function getAllGoalsDaily(date) {
     return allGoalsValue;
 }
 
-export async function setAccomplished(goalText, id){
+export async function setAccomplished(goalText, id) {
     await db.runAsync('UPDATE goals SET accomplished = CASE WHEN accomplished = 1 THEN 0 ELSE 1 END WHERE goals.goalText=? AND goals.id=?', [goalText, id])
     console.log(goalText + "accomplished")
 }
 
-export async function getAccomplished(id){
+export async function getAccomplished(id) {
     const accomp = await db.getFirstAsync('SELECT accomplished FROM goals WHERE goals.id=?', [id]);
-    console.log("Accomp  "+ accomp.accomplished)
+    console.log("Accomp  " + accomp.accomplished)
     return accomp.accomplished;
 }
 
 export async function getGoalWithDate(date) {
-    // db = await databaseInitialization();
-
-    const goalDates = await db.getAllAsync('SELECT * FROM goals WHERE goals.date=?', [date]);
-    // console.log(goalDates);
-    return goalDates;
+    // Check if current day has already established goals
+    console.log("Has goals "+date);
+    const hasGoals = await db.runAsync('SELECT COUNT(*) FROM goals WHERE goals.date=?', [date]);
+    console.log("Has goals "+ hasGoals.lastInsertRowId)
+    // console.log("Has goals "+ JSON.stringify(goalDates))
+    
+    if (hasGoals.lastInsertRowId > 0) { //automatically render the goals
+        console.log("here")
+        
+        const goalDates = await db.getAllAsync('SELECT * FROM goals WHERE goals.date=?', [date]);
+        // console.log(goalDates);
+        return goalDates;
+    } else {
+        console.log("Null")
+        return null;
+    }
 };
 
 export async function setGoal(goalText, date, accomplished) {
+
     const result = await db.runAsync(
         'INSERT INTO goals (goalText, date, accomplished) VALUES (?,?,?);',
         [goalText, date, accomplished]
     );
 
     return result.lastInsertRowId;
+
 };
 
 export async function clearDatabase() {

@@ -19,32 +19,18 @@ const Main = () => {
 
     //Use this new map use state to map each id to a switch
     const [dailyGoals, setDailyGoals] = useState([]);
+
     const day = new Date();
     let sqliteDay = day.toISOString().split('T')[0];
     const [sqlDay, setSqlDay] = useState();
     const [showPerc, setShowPerc] = useState();
-    // const currentGoals = await getGoalWithDate(day);
-    // setSqlDay(sqliteDay);
-    //Need to learn why date is not transferring over...
 
-    // useFocusEffect(
-    //     useCallback(
-    //         async () => {
-    //             // loadDailyGoals();
-    //             // dailyGoalsPercentage();
-    //             return null;
-    //         }
-
-    //     )
-    //     // loadDailyGoals();
-    //     // dailyGoalsPercentage();
-    // )
 
     useEffect(() => {
         setSqlDay(sqliteDay);
         () => {
             loadCurrentGoals();
-            // loadDailyGoals();
+           
         }
 
         // prevDay();
@@ -114,15 +100,17 @@ const Main = () => {
         setDailyGoals(currentGoals);
     }
 
-    async function loadDailyGoals() {
-        if (userGoal == null || userGoal == "") {
-            console.log("Insert goal");
-        } else {
+    async function settingGoal(){
+        if(userGoal != null){
             await setGoal(userGoal, sqliteDay, false);
-            const currentGoals = await getGoalWithDate(sqliteDay);
-            setDailyGoals(currentGoals);
-            console.log("Daily goals second " + dailyGoals)
         }
+    }
+
+    async function loadDailyGoals() {
+        // await setGoal(userGoal, sqliteDay, false);
+        const currentGoals = await getGoalWithDate(sqliteDay);
+        setDailyGoals(currentGoals);
+        console.log("Daily goals second " + dailyGoals)
     }
 
     function supportPercent() {
@@ -131,7 +119,7 @@ const Main = () => {
 
     function Percent() {
         supportPercent()
-        console.log("Inside percent " + showPerc + " " + dailyPercent)
+        // console.log("Inside percent " + showPerc + " " + dailyPercent)
 
         if (showPerc && dailyGoals.length > 0) {
             return (<Text>{dailyPercent}</Text>)
@@ -159,7 +147,11 @@ const Main = () => {
     }
 
     function GoalsList() {
-        if (dailyGoals.length > 0) {
+        if (dailyGoals == null){
+            return <View></View>
+        }else{
+        console.log(dailyGoals.length)
+     //this is kinda useless for the rendering problem, but keep it for check
             return (
                 <FlatList
                     data={dailyGoals}
@@ -178,7 +170,7 @@ const Main = () => {
             () => {
                 loadDailyGoals();
                 dailyGoalsPercentage();
-
+                GoalsList();
             }, [])
     )
 
@@ -227,9 +219,10 @@ const Main = () => {
                         />
                         <Button
                             onPress={() => {
-                                if (userGoal == "") {
+                                if (userGoal == "" || userGoal == null) {
                                     console.log("Empty input")
                                 } else {
+                                    settingGoal();
                                     loadDailyGoals();
                                     dailyGoalsPercentage();
                                 }
