@@ -28,8 +28,8 @@ const Main = () => {
     const [sqlDay, setSqlDay] = useState();
     const [showPerc, setShowPerc] = useState();
 
-   const yesterday = new Date();
-   const tomorrow = new Date();
+    const yesterday = new Date();
+    const tomorrow = new Date();
 
     useFocusEffect(
         useCallback(
@@ -52,15 +52,18 @@ const Main = () => {
 
     function prevDay() {
         countPrev = countPrev + 1;
-        yesterday.setDate( day.getDate() - countPrev);
-        console.log(yesterday)
+        yesterday.setDate(day.getDate() - countPrev);
+        //need to do some research on how to go back to past month without breaking
+        setSqlDay(yesterday.toISOString().split('T')[0]);
+        console.log(yesterday.toISOString().split('T')[0])
         // setSqlDay(yesterday.toISOString().split('T')[0]);
     }
 
     function nextDay() {
-        countNext= countNext + 1;
+        countNext = countNext + 1;
         tomorrow.setDate(day.getDate() + countNext);
-        console.log(tomorrow)
+        setSqlDay(tomorrow.toISOString().split('T')[0]);
+        console.log(tomorrow.toISOString().split('T')[0])
     }
 
     async function dailyGoalsPercentage() {
@@ -95,20 +98,28 @@ const Main = () => {
 
     const GoalDisplay = ({ goalText, id, accomplished }) => {
 
+        if (sqlDay != sqliteDay) {
+            return (
+                <View style={[accomp[id] ? styles.goalAccomp : styles.goalNotAccomp]}>
+                    <Text>{goalText}</Text>
+                </View>
+            )
+        } else {
 
-        return (
-            <View style={[accomp[id] ? styles.goalAccomp : styles.goalNotAccomp]}>
-                <Text>{goalText}</Text>
-                <Switch
+            return (
+                <View style={[accomp[id] ? styles.goalAccomp : styles.goalNotAccomp]}>
+                    <Text>{goalText}</Text>
+                    <Switch
 
-                    value={accomp[id] === 1}
-                    trackColor={{ false: '#757577', true: '#91b0ff' }}
-                    thumbColor={'#f5dd4b'}
-                    onValueChange={() => setGoalTrue(goalText, id)}
+                        value={accomp[id] === 1}
+                        trackColor={{ false: '#757577', true: '#91b0ff' }}
+                        thumbColor={'#f5dd4b'}
+                        onValueChange={() => setGoalTrue(goalText, id)}
 
-                />
-            </View>
-        )
+                    />
+                </View>
+            )
+        }
     }
 
     //Since there's no goal on the first time, there'll be an uncaught promise
