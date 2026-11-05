@@ -247,7 +247,11 @@ const Main = () => {
                             onPress={() => {
                                 if (userGoal == "" || userGoal == null) {
                                     console.log("Empty input")
-                                } else {
+                                } 
+                                else if(sqlDay < sqliteDay){
+                                    console.log("Can't add goals to previous days")
+                                }
+                                else {
                                     settingGoal();
                                     loadDailyGoals();
                                     dailyGoalsPercentage();
