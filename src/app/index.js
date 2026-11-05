@@ -21,10 +21,15 @@ const Main = () => {
     const [dailyGoals, setDailyGoals] = useState([]);
 
     const day = new Date();
+
     let sqliteDay = day.toISOString().split('T')[0];
+    let countPrev = 0;
+    let countNext = 0;
     const [sqlDay, setSqlDay] = useState();
     const [showPerc, setShowPerc] = useState();
 
+   const yesterday = new Date();
+   const tomorrow = new Date();
 
     useFocusEffect(
         useCallback(
@@ -46,16 +51,16 @@ const Main = () => {
     }, []);
 
     function prevDay() {
-        let previousDay = sqliteDay.slice(-2);
-        let previousDayNum = parseInt(previousDay) - 1;
-        // console.log("Prev day " + previousDay)
-        sqliteDay = sqliteDay.replace(previousDay, previousDayNum.toString());
-        setSqlDay(sqliteDay);
-        // console.log("SQL day " + sqliteDay);
+        countPrev = countPrev + 1;
+        yesterday.setDate( day.getDate() - countPrev);
+        console.log(yesterday)
+        // setSqlDay(yesterday.toISOString().split('T')[0]);
     }
 
     function nextDay() {
-
+        countNext= countNext + 1;
+        tomorrow.setDate(day.getDate() + countNext);
+        console.log(tomorrow)
     }
 
     async function dailyGoalsPercentage() {
@@ -67,8 +72,8 @@ const Main = () => {
             percentage += allDailyGoals[i];
         }
         percentage = percentage / allDailyGoals.length;
-        // console.log(percentage);
-        if(isNaN(percentage)){
+
+        if (isNaN(percentage)) {
             percentage = 0;
         }
 
@@ -83,7 +88,7 @@ const Main = () => {
             [id]: accomplishment
         }));
         dailyGoalsPercentage();
-        // console.log(accomplishment)
+
         return accomp[id];
 
     }
@@ -122,7 +127,7 @@ const Main = () => {
         // await setGoal(userGoal, sqliteDay, false);
         const currentGoals = await getGoalWithDate(sqliteDay);
         setDailyGoals(currentGoals);
-        console.log("Daily goals second " + dailyGoals)
+
     }
 
     function supportPercent() {
@@ -163,8 +168,7 @@ const Main = () => {
         if (dailyGoals == null) {
             return <View></View>
         } else {
-            console.log(dailyGoals.length)
-            //this is kinda useless for the rendering problem, but keep it for check
+
             return (
                 <FlatList
                     data={dailyGoals}
@@ -196,7 +200,7 @@ const Main = () => {
 
                     <View style={styles.header}>
                         <Pressable
-                        // onPress={() => prevDay()}
+                            onPress={() => prevDay()}
                         >
                             <SymbolView
                                 name={{ ios: 'arrow.backward', android: 'arrow_back', web: 'arrow_back' }}
@@ -205,11 +209,16 @@ const Main = () => {
                             />
                         </Pressable>
                         <Text> {sqlDay} </Text>
-                        <SymbolView
-                            name={{ ios: 'arrow.forward', android: 'arrow_forward', web: 'arrow_forward' }}
-                            tintColor="#36454F"
-                            size={20}
-                        />
+
+                        <Pressable
+                            onPress={() => nextDay()}
+                        >
+                            <SymbolView
+                                name={{ ios: 'arrow.forward', android: 'arrow_forward', web: 'arrow_forward' }}
+                                tintColor="#36454F"
+                                size={20}
+                            />
+                        </Pressable>
 
                     </View>
 

@@ -70,13 +70,13 @@ export async function getGoalWithDate(date) {
     // Check if current day has already established goals
     const db = await initDatabase();
 
-    console.log("Has goals "+date);
+    // console.log("Has goals "+date);
     const hasGoals = await db.runAsync('SELECT COUNT(*) FROM goals WHERE goals.date=?', [date]);
-    console.log("Has goals "+ hasGoals.lastInsertRowId)
+    // console.log("Has goals "+ hasGoals.lastInsertRowId)
     // console.log("Has goals "+ JSON.stringify(goalDates))
     
     if (hasGoals.lastInsertRowId > 0) { //automatically render the goals
-        console.log("here")
+        // console.log("here")
         
         const goalDates = await db.getAllAsync('SELECT * FROM goals WHERE goals.date=?', [date]);
         // console.log(goalDates);

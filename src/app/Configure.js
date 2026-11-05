@@ -11,9 +11,9 @@ import { setNot } from '../../db_manager/configStorage';
 var showPerce = false;
 
 function changeShowPerc() {
-    console.log("Before " + showPerce)
+    // console.log("Before " + showPerce)
     showPerce = !showPerce;
-    console.log("After " + showPerce)
+    // console.log("After " + showPerce)
 }
 
 export function showPercent() {
