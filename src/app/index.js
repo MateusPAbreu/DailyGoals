@@ -5,12 +5,13 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 // import { isEnabled } from 'react-native/Libraries/Performance/Systrace';
 import { NavigationContainer } from '@react-navigation/native';
 import { useFocusEffect, useNavigation } from 'expo-router';
-import { getAccomplished, getAllGoalsDaily, getGoalWithDate, initDatabase, setAccomplished, setGoal } from '../../db_manager/goalsStorage';
+import { allRows, getAccomplished, getAllGoalsDaily, getGoalWithDate, initDatabase, setAccomplished, setGoal } from '../../db_manager/goalsStorage';
 import { showPercent } from './Configure';
 
 const Main = () => {
     // const navigation = useNavigation(); //Broke the app, worry about it later
     // clearDatabase();
+    console.log(allRows());
     initDatabase();
     const [userGoal, setUserGoal] = useState();
     const [accomp, setAccomp] = useState({});
@@ -54,22 +55,37 @@ const Main = () => {
 
     function prevDay() {
         //maybe try this with sql
-       
+
         previousDay.setDate(previousDay.getDate() - 1);
-        
-       
+        //This is necessary so one affects the other
         futureDay.setDate(previousDay.getDate())
         setSqlDay(previousDay.toISOString().split('T')[0]);
-        console.log(previousDay.toISOString().split('T')[0])
+
+        loadCurrentGoals();
+        loadDailyGoals();
+        dailyGoalsPercentage();
+        GoalsList();
+
+
+        // setDailyGoals([]);
+        // This is not the behaviour I want, I want the dailyGoals to change entirely
     }
 
     function nextDay() {
 
         // console.log(futureDay.getDate()+1)
-        futureDay.setDate(futureDay.getDate()+1);
+        futureDay.setDate(futureDay.getDate() + 1);
         previousDay.setDate(futureDay.getDate())
         setSqlDay(futureDay.toISOString().split('T')[0]);
-        console.log(futureDay.toISOString().split('T')[0])
+        // setDailyGoals([]);
+
+        loadCurrentGoals();
+        loadDailyGoals();
+        dailyGoalsPercentage();
+        GoalsList();
+
+
+
     }
 
     async function dailyGoalsPercentage() {
@@ -130,19 +146,19 @@ const Main = () => {
 
     //Since there's no goal on the first time, there'll be an uncaught promise
     async function loadCurrentGoals() {
-        const currentGoals = await getGoalWithDate(sqliteDay);
+        const currentGoals = await getGoalWithDate(sqlDay);
         setDailyGoals(currentGoals);
     }
 
     async function settingGoal() {
         if (userGoal != null) {
-            await setGoal(userGoal, sqliteDay, false);
+            await setGoal(userGoal, sqlDay, false);
         }
     }
 
     async function loadDailyGoals() {
         // await setGoal(userGoal, sqliteDay, false);
-        const currentGoals = await getGoalWithDate(sqliteDay);
+        const currentGoals = await getGoalWithDate(sqlDay);
         setDailyGoals(currentGoals);
 
     }
