@@ -27,9 +27,11 @@ const Main = () => {
     let countNext = 0;
     const [sqlDay, setSqlDay] = useState();
     const [showPerc, setShowPerc] = useState();
+    const [previousDay, setPreviousDay] = useState(new Date());
+    const [futureDay, setFutureDay] = useState(new Date());
 
-    const yesterday = new Date();
-    const tomorrow = new Date();
+    // const yesterday = new Date();
+    // const tomorrow = new Date();
 
     useFocusEffect(
         useCallback(
@@ -51,19 +53,23 @@ const Main = () => {
     }, []);
 
     function prevDay() {
-        countPrev = countPrev + 1;
-        yesterday.setDate(day.getDate() - countPrev);
-        //need to do some research on how to go back to past month without breaking
-        setSqlDay(yesterday.toISOString().split('T')[0]);
-        console.log(yesterday.toISOString().split('T')[0])
-        // setSqlDay(yesterday.toISOString().split('T')[0]);
+        //maybe try this with sql
+       
+        previousDay.setDate(previousDay.getDate() - 1);
+        
+       
+        futureDay.setDate(previousDay.getDate())
+        setSqlDay(previousDay.toISOString().split('T')[0]);
+        console.log(previousDay.toISOString().split('T')[0])
     }
 
     function nextDay() {
-        countNext = countNext + 1;
-        tomorrow.setDate(day.getDate() + countNext);
-        setSqlDay(tomorrow.toISOString().split('T')[0]);
-        console.log(tomorrow.toISOString().split('T')[0])
+
+        // console.log(futureDay.getDate()+1)
+        futureDay.setDate(futureDay.getDate()+1);
+        previousDay.setDate(futureDay.getDate())
+        setSqlDay(futureDay.toISOString().split('T')[0]);
+        console.log(futureDay.toISOString().split('T')[0])
     }
 
     async function dailyGoalsPercentage() {
@@ -247,8 +253,8 @@ const Main = () => {
                             onPress={() => {
                                 if (userGoal == "" || userGoal == null) {
                                     console.log("Empty input")
-                                } 
-                                else if(sqlDay < sqliteDay){
+                                }
+                                else if (sqlDay < sqliteDay) {
                                     console.log("Can't add goals to previous days")
                                 }
                                 else {
