@@ -16,7 +16,9 @@ initDatabase();
 export async function initDatabase() {
     db = await databaseInitialization();
 
-    if (!db) {
+    console.log(!db)
+
+    // if (!db) { 
         //await cannot be called outside of an async function
         await db.execAsync(`
         PRAGMA journal_mode = WAL;
@@ -27,8 +29,7 @@ export async function initDatabase() {
         lastNot INTEGER
         );
     `);
-    }
-    console.log(db)
+    // }
 
     return db;
 }

@@ -33,7 +33,7 @@ export async function initDatabase() {
     `);
     }
 
-    console.log(db);
+    // console.log(db);
     return db;
 }
 

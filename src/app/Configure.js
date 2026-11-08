@@ -23,6 +23,7 @@ export function showPercent() {
 function Configure() {
 
     initDatabase();
+    allRows();
     const getNotified = true;
     const dayTime = [{ label: "am", value: "am" }, { label: "pm", value: "pm" }]
     const [firstNotification, setFirstNotification] = useState();
@@ -41,8 +42,8 @@ function Configure() {
             if (firstTime > 12 || firstTime < 0 && lastTime > 12 || lastTime < 0) {
                 console.log("Numbers not acceptable")
             } else {
-                const firstN = firstTime + " " + firstNotification;
-                const lastN = lastTime + " " + lastNotification;
+                const firstN = firstNotification + " " + firstTime;
+                const lastN = lastNotification + " " + lastTime;
                 setNotif(firstN, lastN);
             }
         }
@@ -100,6 +101,7 @@ function Configure() {
                         text={firstNotification}
                     >
                     </TextInput>
+                    <Text>:</Text>
                     <TextInput
                         inputMode='numeric'
                         onChangeText={setFirstMinute}
@@ -124,7 +126,10 @@ function Configure() {
                         text={lastNotification}
                     >
                     </TextInput>
-                       <TextInput
+
+                    <Text>:</Text>
+
+                    <TextInput
                         inputMode='numeric'
                         onChangeText={setLastMinute}
                         text={lastMinute}
