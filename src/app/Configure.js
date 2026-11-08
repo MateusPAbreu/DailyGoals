@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Button, Pressable, Text, TextInput, View } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { setNot } from '../../db_manager/configStorage';
+import { allRows, initDatabase, setNotif } from '../../db_manager/configStorage';
 
 
 
@@ -22,23 +22,28 @@ export function showPercent() {
 
 function Configure() {
 
-    const getNotified = false;
+    initDatabase();
+    const getNotified = true;
     const dayTime = [{ label: "am", value: "am" }, { label: "pm", value: "pm" }]
     const [firstNotification, setFirstNotification] = useState();
     const [firstTime, setFirstTime] = useState();
+    const [firstMinute, setFirstMinute] = useState();
     const [lastNotification, setLastNotification] = useState();
+    const [lastMinute, setLastMinute] = useState()
     const [lastTime, setLastTime] = useState();
     const [buttonState, setButtonState] = useState(showPerce.toString());
 
 
     async function setUpNotification() {
+        // console.log("Being called")
+
         if (getNotified) {
             if (firstTime > 12 || firstTime < 0 && lastTime > 12 || lastTime < 0) {
                 console.log("Numbers not acceptable")
             } else {
                 const firstN = firstTime + " " + firstNotification;
                 const lastN = lastTime + " " + lastNotification;
-                setNot(firstN, lastN);
+                setNotif(firstN, lastN);
             }
         }
     }
@@ -50,6 +55,8 @@ function Configure() {
             <Button
                 onPress={
                     () => {
+                        allRows();
+
                         changeShowPerc();
                         setButtonState(showPerce.toString());
                     }
@@ -93,6 +100,12 @@ function Configure() {
                         text={firstNotification}
                     >
                     </TextInput>
+                    <TextInput
+                        inputMode='numeric'
+                        onChangeText={setFirstMinute}
+                        text={firstMinute}
+                    >
+                    </TextInput>
                     <Dropdown
                         data={dayTime}
                         labelField="label"
@@ -109,6 +122,12 @@ function Configure() {
                         inputMode='numeric'
                         onChangeText={setLastNotification}
                         text={lastNotification}
+                    >
+                    </TextInput>
+                       <TextInput
+                        inputMode='numeric'
+                        onChangeText={setLastMinute}
+                        text={lastMinute}
                     >
                     </TextInput>
                     <Dropdown

@@ -5,13 +5,13 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 // import { isEnabled } from 'react-native/Libraries/Performance/Systrace';
 import { NavigationContainer } from '@react-navigation/native';
 import { useFocusEffect, useNavigation } from 'expo-router';
-import { allRows, getAccomplished, getAllGoalsDaily, getGoalWithDate, initDatabase, setAccomplished, setGoal } from '../../db_manager/goalsStorage';
+import { getAccomplished, getAllGoalsDaily, getGoalWithDate, initDatabase, setAccomplished, setGoal } from '../../db_manager/goalsStorage';
 import { showPercent } from './Configure';
 
 const Main = () => {
     // const navigation = useNavigation(); //Broke the app, worry about it later
     // clearDatabase();
-    console.log(allRows());
+    // console.log(allRows());
     initDatabase();
     const [userGoal, setUserGoal] = useState();
     const [accomp, setAccomp] = useState({});

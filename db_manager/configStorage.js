@@ -4,8 +4,8 @@ const db_path = 'config.db';
 
 let db = null;
 
-async function databaseInitialization(){
-    if (!db){
+async function databaseInitialization() {
+    if (!db) {
         db = await SQLite.openDatabaseAsync(db_path);
     }
     return db;
@@ -18,7 +18,6 @@ export async function initDatabase() {
 
     if (!db) {
         //await cannot be called outside of an async function
-        // db = await SQLite.openDatabaseAsync('goals.db');
         await db.execAsync(`
         PRAGMA journal_mode = WAL;
         CREATE TABLE IF NOT EXISTS config (
@@ -29,14 +28,19 @@ export async function initDatabase() {
         );
     `);
     }
+    console.log(db)
+
+    return db;
 }
 
-export async function allRows(){
+export async function allRows() {
     const goals = await db.getAllAsync('SELECT * FROM config');
     console.log("Current goals: ", JSON.stringify(goals, null, 2));
 };
 
-export async function setNot(firstNot, lastNot){
+export async function setNotif(firstNot, lastNot) {
+    const db = await initDatabase();
+    console.log("Here")
     const notifications = await db.runAsync(
         'INSERT INTO config (firstNot, lastNot) VALUES (?, ?);',
         [firstNot, lastNot]
