@@ -24,7 +24,7 @@ function Configure() {
 
     initDatabase();
     allRows();
-    const getNotified = true;
+    const getNotified = false;
     const dayTime = [{ label: "am", value: "am" }, { label: "pm", value: "pm" }]
     const [firstNotification, setFirstNotification] = useState();
     const [firstTime, setFirstTime] = useState();
@@ -153,6 +153,11 @@ function Configure() {
                     />
 
                     <ShowPercentage />
+
+                    <Button
+                        onPress={() => getNotified = !getNotified}
+                        title="Do you want notifications?"
+                    />
                 </View>
 
             </SafeAreaView>
