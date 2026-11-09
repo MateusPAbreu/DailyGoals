@@ -26,6 +26,8 @@ function Configure() {
     allRows();
     const getNotified = false;
     const dayTime = [{ label: "am", value: "am" }, { label: "pm", value: "pm" }]
+    const [timeOne, setTimeOne] = useState("");
+    const [timeTwo, setTimeTwo] = useState("");
     const [firstNotification, setFirstNotification] = useState();
     const [firstTime, setFirstTime] = useState();
     const [firstMinute, setFirstMinute] = useState();
@@ -114,8 +116,10 @@ function Configure() {
                         valueField="value"
                         onChange={item => {
                             setFirstTime(item.value);
+                            setTimeOne(firstTime);
                         }}
                     />
+                    <Text>{timeOne}</Text>
                 </View>
 
                 <View>
@@ -141,8 +145,10 @@ function Configure() {
                         valueField="value"
                         onChange={item => {
                             setLastTime(item.value);
+                            setTimeTwo(lastTime);
                         }}
                     />
+                    <Text>{lastTime}</Text>
                 </View>
 
                 <View>
