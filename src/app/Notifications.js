@@ -11,8 +11,23 @@ function Notify() {
     });
 }
 
-export function getUserPermission(){
-    
+export async function getUserPermission(){
+    const {status: existingStatus} = await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== 'granted'){
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+    }
+    if (finalStatus !== 'granted'){
+        alert('Failed to get push token for push notification');
+        return;
+    }
+}
+
+export async function dailyReminder(){
+    const id = await Notifications.scheduleNotificationAsync({
+        identifier: 'reminder',
+    });
 }
 
 export default Notify
