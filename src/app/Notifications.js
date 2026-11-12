@@ -1,4 +1,5 @@
 import * as Notifications from 'expo-notifications';
+import { lastRow } from '../../db_manager/configStorage';
 
 function Notify() {
     Notifications.setNotificationHandler({
@@ -25,6 +26,7 @@ export async function getUserPermission(){
 }
 
 export async function dailyReminder(){
+    const info = lastRow();
     const id = await Notifications.scheduleNotificationAsync({
         identifier: 'reminder',
         content: {

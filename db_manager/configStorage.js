@@ -49,3 +49,8 @@ export async function setNotif(firstNot, lastNot) {
 
     return notifications.lastInsertRowId;
 }
+
+export async function lastRow(){
+    const info = await db.prepare('SELECT * FROM config');
+    return info.lastInsertRowId();
+}
