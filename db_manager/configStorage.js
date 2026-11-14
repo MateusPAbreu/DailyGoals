@@ -16,7 +16,7 @@ initDatabase();
 export async function initDatabase() {
     db = await databaseInitialization();
 
-    console.log(!db)
+    // console.log(!db)
 
     // if (!db) { 
         //await cannot be called outside of an async function
@@ -36,12 +36,12 @@ export async function initDatabase() {
 
 export async function allRows() {
     const goals = await db.getAllAsync('SELECT * FROM config');
-    console.log("Current goals: ", JSON.stringify(goals, null, 2));
+    // console.log("Current goals: ", JSON.stringify(goals, null, 2));
 };
 
 export async function setNotif(firstNot, lastNot) {
     const db = await initDatabase();
-    console.log("Here")
+    // console.log("Here")
     const notifications = await db.runAsync(
         'INSERT INTO config (firstNot, lastNot) VALUES (?, ?);',
         [firstNot, lastNot]

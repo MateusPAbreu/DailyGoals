@@ -1,11 +1,10 @@
-import { DateTimePicker } from '@expo/ui/jetpack-compose';
+import { DateTimePicker, Host } from '@expo/ui/jetpack-compose';
 import { useNavigation } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import { useState } from 'react';
-import { Button, Pressable, Text, TextInput, View } from 'react-native';
-import { Dropdown } from 'react-native-element-dropdown';
+import { Button, Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { allRows, initDatabase, setNotif } from '../../db_manager/configStorage';
+import { allRows, initDatabase } from '../../db_manager/configStorage';
 
 
 
@@ -25,7 +24,7 @@ function Configure() {
 
     initDatabase();
     allRows();
-    const getNotified = false;
+    const [getNotified, setGetNotified] = useState(false);
     const dayTime = [{ label: "am", value: "am" }, { label: "pm", value: "pm" }]
     const [timeOne, setTimeOne] = useState("");
     const [timeTwo, setTimeTwo] = useState("");
@@ -40,32 +39,67 @@ function Configure() {
 
     async function setUpNotification() {
         // console.log("Being called")
-
+        console.log(firstTime)
         if (getNotified) {
-            if (firstTime > 12 || firstTime < 0 && lastTime > 12 || lastTime < 0) {
-                console.log("Numbers not acceptable")
-            } else {
-                const firstN = firstNotification + " " + firstTime;
-                const lastN = lastNotification + " " + lastTime;
-                setNotif(firstN, lastN);
-            }
+            // if (firstTime > 12 || firstTime < 0 && lastTime > 12 || lastTime < 0) {
+            //     console.log("Numbers not acceptable")
+            // } else {
+            //     const firstN = firstNotification + " " + firstTime;
+            //     const lastN = lastNotification + " " + lastTime;
+            //     setNotif(firstN, lastN);
+            // }
         }
     }
 
-    function configureTime() {
-        if(getNotified){
-            <DateTimePicker
-                onDateSelected={date =>{
-                    if (date !== null){
-                        setFirstTime(date);
-                    }
-                }}
-                displayedComponents='hourAndMinute'
-                initialDate={firstTime}
-                variant='picker'
-            />
-        } else{
-            <View></View>
+    function ConfigureFirstTime() {
+        if (getNotified) {
+            return (
+                <Host
+                    matchContents={{ vertical: true }}
+                    style={{ width: '100%' }}
+                >
+                    <DateTimePicker
+                        onDateSelected={date => {
+                            if (date !== null) {
+                                setFirstTime(date);
+                            }
+                        }}
+                        displayedComponents='hourAndMinute'
+                        initialDate={firstTime}
+                        variant='picker'
+                    />
+                </Host>
+            )
+        } else {
+            return (
+                <View></View>
+            )
+        }
+    }
+
+    function ConfigureLastTime() {
+        if (getNotified) {
+            return (
+                <Host
+                    matchContents={{ vertical: true }}
+                    style={{ width: '100%' }}
+                >
+                    <DateTimePicker
+                        onDateSelected={date => {
+                            if (date !== null) {
+                                setLastMinute(date);
+                            }
+                        }}
+                        displayedComponents='hourAndMinute'
+                        initialDate={lastMinute}
+                        variant='picker'
+                    />
+                </Host>
+            )
+        } else {
+            return (
+                <View></View>
+            )
         }
     }
 
@@ -86,7 +120,7 @@ function Configure() {
 
         )
 
-    } 
+    }
 
     const ReturnHome = () => {
         const navigation = useNavigation();
@@ -107,82 +141,39 @@ function Configure() {
     }
 
     return (
+        // https://stackoverflow.com/questions/34698616/react-native-scrollview-snapping-back-to-top-after-release
         <SafeAreaProvider>
             <SafeAreaView>
                 <ReturnHome />
+                <ScrollView>
 
+                    <View>
+                        <Text>First notification of the day</Text>
 
-                <View>
-                    <Text>First notification of the day</Text>
-                    <TextInput
-                        inputMode='numeric'
-                        onChangeText={setFirstNotification}
-                        text={firstNotification}
-                    >
-                    </TextInput>
-                    <Text>:</Text>
-                    <TextInput
-                        inputMode='numeric'
-                        onChangeText={setFirstMinute}
-                        text={firstMinute}
-                    >
-                    </TextInput>
-                    <Dropdown
-                        data={dayTime}
-                        labelField="label"
-                        valueField="value"
-                        onChange={item => {
-                            setFirstTime(item.value);
-                            setTimeOne(firstTime);
-                        }}
-                    />
-                    <Text>{timeOne}</Text>
-                </View>
+                        <ConfigureFirstTime></ConfigureFirstTime>
+                    </View>
 
-                <View>
-                    <Text>Last notification of the day</Text>
-                    <TextInput
-                        inputMode='numeric'
-                        onChangeText={setLastNotification}
-                        text={lastNotification}
-                    >
-                    </TextInput>
+                    <View>
+                        <Text>Last notification of the day</Text>
 
-                    <Text>:</Text>
+                        <ConfigureLastTime></ConfigureLastTime>
+                    </View>
 
-                    <TextInput
-                        inputMode='numeric'
-                        onChangeText={setLastMinute}
-                        text={lastMinute}
-                    >
-                    </TextInput>
-                    <Dropdown
-                        data={dayTime}
-                        labelField="label"
-                        valueField="value"
-                        onChange={item => {
-                            setLastTime(item.value);
-                            setTimeTwo(lastTime);
-                        }}
-                    />
-                    <Text>{lastTime}</Text>
-                </View>
+                    <View>
+                        <Button
+                            onPress={() => setUpNotification()}
+                            title="Set config"
 
-                <View>
-                    <Button
-                        onPress={() => setUpNotification()}
-                        title="Set config"
+                        />
 
-                    />
+                        <ShowPercentage />
 
-                    <ShowPercentage />
-
-                    <Button
-                        onPress={() => getNotified = !getNotified}
-                        title="Do you want notifications?"
-                    />
-                </View>
-
+                        <Button
+                            onPress={() => setGetNotified(!getNotified)}
+                            title="Do you want notifications?"
+                        />
+                    </View>
+                </ScrollView>
             </SafeAreaView>
         </SafeAreaProvider>
 
