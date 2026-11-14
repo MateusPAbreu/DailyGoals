@@ -1,3 +1,4 @@
+import { DateTimePicker } from '@expo/ui/jetpack-compose';
 import { useNavigation } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import { useState } from 'react';
@@ -51,6 +52,22 @@ function Configure() {
         }
     }
 
+    function configureTime() {
+        if(getNotified){
+            <DateTimePicker
+                onDateSelected={date =>{
+                    if (date !== null){
+                        setFirstTime(date);
+                    }
+                }}
+                displayedComponents='hourAndMinute'
+                initialDate={firstTime}
+                variant='picker'
+            />
+        } else{
+            <View></View>
+        }
+    }
 
     const ShowPercentage = () => {
         return (
@@ -69,7 +86,7 @@ function Configure() {
 
         )
 
-    }
+    } 
 
     const ReturnHome = () => {
         const navigation = useNavigation();
