@@ -26,7 +26,7 @@ function Configure() {
     allRows();
     const [getNotified, setGetNotified] = useState(false);
     const [firstTime, setFirstTime] = useState();
-    const [lastMinute, setLastMinute] = useState()
+    const [lastTime, setLastTime] = useState()
     const [buttonState, setButtonState] = useState(showPerce.toString());
 
 
@@ -147,11 +147,11 @@ function Configure() {
                                 <DateTimePicker
                                     onDateSelected={date => {
                                         if (date !== null) {
-                                            setLastMinute(date);
+                                            setLastTime(date);
                                         }
                                     }}
                                     displayedComponents='hourAndMinute'
-                                    initialDate={lastMinute}
+                                    initialDate={lastTime}
                                     variant='picker'
                                 />
                             </Host>
