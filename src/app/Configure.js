@@ -2,7 +2,7 @@ import { DateTimePicker, Host } from '@expo/ui/jetpack-compose';
 import { useNavigation } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import { useState } from 'react';
-import { Button, Pressable, ScrollView, Text, View } from 'react-native';
+import { Alert, Button, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { allRows, initDatabase } from '../../db_manager/configStorage';
 
@@ -35,11 +35,12 @@ function Configure() {
     const [lastMinute, setLastMinute] = useState()
     const [lastTime, setLastTime] = useState();
     const [buttonState, setButtonState] = useState(showPerce.toString());
+    const [modalVisible, setModalVisible] = useState(false);
 
 
     async function setUpNotification() {
         // console.log("Being called")
-        console.log(firstTime)
+        console.log(firstTime.toISOstring().slice(11, 14))
         if (getNotified) {
             // if (firstTime > 12 || firstTime < 0 && lastTime > 12 || lastTime < 0) {
             //     console.log("Numbers not acceptable")
@@ -70,11 +71,12 @@ function Configure() {
                     />
                 </Host>
             )
-        } else {
-            return (
-                <View></View>
-            )
         }
+        //  else {
+        //     return (
+        //         <View></View>
+        //     )
+        // }
     }
 
     function ConfigureLastTime() {
@@ -96,11 +98,12 @@ function Configure() {
                     />
                 </Host>
             )
-        } else {
-            return (
-                <View></View>
-            )
         }
+        // else {
+        //     return (
+        //         <View></View>
+        //     )
+        // }
     }
 
     const ShowPercentage = () => {
@@ -140,45 +143,71 @@ function Configure() {
         );
     }
 
+    function TimerMode() {
+        return(
+            <Modal
+                animationType='fade'
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                    Alert.alert('Modal has been closed.');
+                    setModalVisible(!modalVisible);
+                }}
+            >
+
+            </Modal>
+        )
+    }
+
     return (
         // https://stackoverflow.com/questions/34698616/react-native-scrollview-snapping-back-to-top-after-release
-        <SafeAreaProvider>
-            <SafeAreaView>
+        <SafeAreaProvider style={styles.container}>
+            <SafeAreaView style={styles.container}>
                 <ReturnHome />
-                <ScrollView>
 
-                    <View>
-                        <Text>First notification of the day</Text>
 
-                        <ConfigureFirstTime></ConfigureFirstTime>
-                    </View>
+                <View>
+                    <Text>First notification of the day</Text>
 
-                    <View>
-                        <Text>Last notification of the day</Text>
+                    <ConfigureFirstTime></ConfigureFirstTime>
+                </View>
 
-                        <ConfigureLastTime></ConfigureLastTime>
-                    </View>
+                <View>
+                    <Text>Last notification of the day</Text>
 
-                    <View>
-                        <Button
-                            onPress={() => setUpNotification()}
-                            title="Set config"
+                    <ConfigureLastTime></ConfigureLastTime>
+                </View>
 
-                        />
+                <View>
+                    <Button
+                        onPress={() => setUpNotification()}
+                        title="Set config"
 
-                        <ShowPercentage />
+                    />
 
-                        <Button
-                            onPress={() => setGetNotified(!getNotified)}
-                            title="Do you want notifications?"
-                        />
-                    </View>
-                </ScrollView>
+                    <ShowPercentage />
+
+                    <Button
+                        onPress={() => setGetNotified(!getNotified)}
+                        title="Do you want notifications?"
+                    />
+                </View>
+
             </SafeAreaView>
         </SafeAreaProvider>
 
     );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+    },
+    scroll: {
+        flex: 1,
+        paddingBottom: 50,
+    }
+})
 
 
 export default Configure;
