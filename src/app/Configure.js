@@ -25,22 +25,24 @@ function Configure() {
     initDatabase();
     allRows();
     const [getNotified, setGetNotified] = useState(false);
-    const dayTime = [{ label: "am", value: "am" }, { label: "pm", value: "pm" }]
-    const [timeOne, setTimeOne] = useState("");
-    const [timeTwo, setTimeTwo] = useState("");
-    const [firstNotification, setFirstNotification] = useState();
+    // const dayTime = [{ label: "am", value: "am" }, { label: "pm", value: "pm" }]
+    // const [timeOne, setTimeOne] = useState("");
+    // const [timeTwo, setTimeTwo] = useState("");
+    // const [firstNotification, setFirstNotification] = useState();
     const [firstTime, setFirstTime] = useState();
-    const [firstMinute, setFirstMinute] = useState();
-    const [lastNotification, setLastNotification] = useState();
+    // const [firstMinute, setFirstMinute] = useState();
+    // const [lastNotification, setLastNotification] = useState();
     const [lastMinute, setLastMinute] = useState()
-    const [lastTime, setLastTime] = useState();
+    // const [lastTime, setLastTime] = useState();
     const [buttonState, setButtonState] = useState(showPerce.toString());
-    const [modalVisible, setModalVisible] = useState(false);
+    // const [modalVisible, setModalVisible] = useState(false);
 
 
     async function setUpNotification() {
         // console.log("Being called")
-        console.log(firstTime.toISOstring().slice(11, 14))
+        console.log(firstTime)
+
+        // console.log(firstTime.toISOstring().slice(11, 14))
         if (getNotified) {
             // if (firstTime > 12 || firstTime < 0 && lastTime > 12 || lastTime < 0) {
             //     console.log("Numbers not acceptable")
@@ -50,60 +52,6 @@ function Configure() {
             //     setNotif(firstN, lastN);
             // }
         }
-    }
-
-    function ConfigureFirstTime() {
-        if (getNotified) {
-            return (
-                <Host
-                    matchContents={{ vertical: true }}
-                    style={{ width: '100%' }}
-                >
-                    <DateTimePicker
-                        onDateSelected={date => {
-                            if (date !== null) {
-                                setFirstTime(date);
-                            }
-                        }}
-                        displayedComponents='hourAndMinute'
-                        initialDate={firstTime}
-                        variant='picker'
-                    />
-                </Host>
-            )
-        }
-        //  else {
-        //     return (
-        //         <View></View>
-        //     )
-        // }
-    }
-
-    function ConfigureLastTime() {
-        if (getNotified) {
-            return (
-                <Host
-                    matchContents={{ vertical: true }}
-                    style={{ width: '100%' }}
-                >
-                    <DateTimePicker
-                        onDateSelected={date => {
-                            if (date !== null) {
-                                setLastMinute(date);
-                            }
-                        }}
-                        displayedComponents='hourAndMinute'
-                        initialDate={lastMinute}
-                        variant='picker'
-                    />
-                </Host>
-            )
-        }
-        // else {
-        //     return (
-        //         <View></View>
-        //     )
-        // }
     }
 
     const ShowPercentage = () => {
@@ -143,42 +91,18 @@ function Configure() {
         );
     }
 
-    function TimerMode() {
-        return(
-            <Modal
-                animationType='fade'
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={() => {
-                    Alert.alert('Modal has been closed.');
-                    setModalVisible(!modalVisible);
-                }}
-            >
-
-            </Modal>
-        )
-    }
-
     return (
         // https://stackoverflow.com/questions/34698616/react-native-scrollview-snapping-back-to-top-after-release
         <SafeAreaProvider style={styles.container}>
             <SafeAreaView style={styles.container}>
                 <ReturnHome />
 
-
                 <View>
-                    <Text>First notification of the day</Text>
+                    <Button
+                        onPress={() => setGetNotified(true)}
+                        title="Do you want notifications?"
+                    />
 
-                    <ConfigureFirstTime></ConfigureFirstTime>
-                </View>
-
-                <View>
-                    <Text>Last notification of the day</Text>
-
-                    <ConfigureLastTime></ConfigureLastTime>
-                </View>
-
-                <View>
                     <Button
                         onPress={() => setUpNotification()}
                         title="Set config"
@@ -187,14 +111,72 @@ function Configure() {
 
                     <ShowPercentage />
 
-                    <Button
-                        onPress={() => setGetNotified(!getNotified)}
-                        title="Do you want notifications?"
-                    />
+                    <Modal
+                        animationType='fade'
+                        transparent={true}
+                        visible={getNotified}
+                        onRequestClose={() => {
+                            Alert.alert('Modal has been closed.');
+                            setGetNotified(!getNotified);
+                        }}
+                    >
+                        <View>
+                            <Pressable
+                                onPress={() =>
+                                    // navigation.navigate("index")
+                                    setGetNotified(!getNotified)
+                                }
+                            >
+                            <SymbolView
+                                name={{ ios: 'arrow.backward', android: 'arrow_back', web: 'arrow_back' }}
+                                tintColor="#36454F"
+                                size={20}
+                            />
+                        </Pressable>
+
+                        <Text>First notification of the day</Text>
+
+                        <Host
+                            matchContents={{ vertical: true }}
+                            style={{ width: '70%' }}
+                        >
+                            <DateTimePicker
+                                onDateSelected={date => {
+                                    if (date !== null) {
+                                        setFirstTime(date);
+                                    }
+                                }}
+                                displayedComponents='hourAndMinute'
+                                initialDate={firstTime}
+                                variant='picker'
+                            />
+                        </Host>
+
+                        <Text>Last notification of the day</Text>
+
+                        <Host
+                            matchContents={{ vertical: true }}
+                            style={{ width: '70%' }}
+                        >
+                            <DateTimePicker
+                                onDateSelected={date => {
+                                    if (date !== null) {
+                                        setLastMinute(date);
+                                    }
+                                }}
+                                displayedComponents='hourAndMinute'
+                                initialDate={lastMinute}
+                                variant='picker'
+                            />
+                        </Host>
                 </View>
 
-            </SafeAreaView>
-        </SafeAreaProvider>
+
+            </Modal>
+        </View>
+
+            </SafeAreaView >
+        </SafeAreaProvider >
 
     );
 }
