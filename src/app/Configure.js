@@ -25,32 +25,18 @@ function Configure() {
     initDatabase();
     allRows();
     const [getNotified, setGetNotified] = useState(false);
-    // const dayTime = [{ label: "am", value: "am" }, { label: "pm", value: "pm" }]
-    // const [timeOne, setTimeOne] = useState("");
-    // const [timeTwo, setTimeTwo] = useState("");
-    // const [firstNotification, setFirstNotification] = useState();
     const [firstTime, setFirstTime] = useState();
-    // const [firstMinute, setFirstMinute] = useState();
-    // const [lastNotification, setLastNotification] = useState();
     const [lastMinute, setLastMinute] = useState()
-    // const [lastTime, setLastTime] = useState();
     const [buttonState, setButtonState] = useState(showPerce.toString());
-    // const [modalVisible, setModalVisible] = useState(false);
 
 
     async function setUpNotification() {
-        // console.log("Being called")
-        console.log(firstTime)
-
-        // console.log(firstTime.toISOstring().slice(11, 14))
+  
         if (getNotified) {
-            // if (firstTime > 12 || firstTime < 0 && lastTime > 12 || lastTime < 0) {
-            //     console.log("Numbers not acceptable")
-            // } else {
-            //     const firstN = firstNotification + " " + firstTime;
-            //     const lastN = lastNotification + " " + lastTime;
-            //     setNotif(firstN, lastN);
-            // }
+            const firstN = firstTime.toTimeString().slice(0, 5);
+            const lastN = lastTime.toTimeString().slice(0, 5);
+            setNotif(firstN, lastN);
+
         }
     }
 
@@ -127,53 +113,53 @@ function Configure() {
                                     setGetNotified(!getNotified)
                                 }
                             >
-                            <SymbolView
-                                name={{ ios: 'arrow.backward', android: 'arrow_back', web: 'arrow_back' }}
-                                tintColor="#36454F"
-                                size={20}
-                            />
-                        </Pressable>
+                                <SymbolView
+                                    name={{ ios: 'arrow.backward', android: 'arrow_back', web: 'arrow_back' }}
+                                    tintColor="#36454F"
+                                    size={20}
+                                />
+                            </Pressable>
 
-                        <Text>First notification of the day</Text>
+                            <Text>First notification of the day</Text>
 
-                        <Host
-                            matchContents={{ vertical: true }}
-                            style={{ width: '70%' }}
-                        >
-                            <DateTimePicker
-                                onDateSelected={date => {
-                                    if (date !== null) {
-                                        setFirstTime(date);
-                                    }
-                                }}
-                                displayedComponents='hourAndMinute'
-                                initialDate={firstTime}
-                                variant='picker'
-                            />
-                        </Host>
+                            <Host
+                                matchContents={{ vertical: true }}
+                                style={{ width: '70%' }}
+                            >
+                                <DateTimePicker
+                                    onDateSelected={date => {
+                                        if (date !== null) {
+                                            setFirstTime(date);
+                                        }
+                                    }}
+                                    displayedComponents='hourAndMinute'
+                                    initialDate={firstTime}
+                                    variant='picker'
+                                />
+                            </Host>
 
-                        <Text>Last notification of the day</Text>
+                            <Text>Last notification of the day</Text>
 
-                        <Host
-                            matchContents={{ vertical: true }}
-                            style={{ width: '70%' }}
-                        >
-                            <DateTimePicker
-                                onDateSelected={date => {
-                                    if (date !== null) {
-                                        setLastMinute(date);
-                                    }
-                                }}
-                                displayedComponents='hourAndMinute'
-                                initialDate={lastMinute}
-                                variant='picker'
-                            />
-                        </Host>
+                            <Host
+                                matchContents={{ vertical: true }}
+                                style={{ width: '70%' }}
+                            >
+                                <DateTimePicker
+                                    onDateSelected={date => {
+                                        if (date !== null) {
+                                            setLastMinute(date);
+                                        }
+                                    }}
+                                    displayedComponents='hourAndMinute'
+                                    initialDate={lastMinute}
+                                    variant='picker'
+                                />
+                            </Host>
+                        </View>
+
+
+                    </Modal>
                 </View>
-
-
-            </Modal>
-        </View>
 
             </SafeAreaView >
         </SafeAreaProvider >
