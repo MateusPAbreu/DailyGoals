@@ -97,6 +97,11 @@ function Configure() {
 
                     <ShowPercentage />
 
+                    <Button
+                        onPress={() => console.log("Determine notifications!")}
+                        title="Get notified"
+                    />
+
                     <Modal
                         animationType='fade'
                         transparent={true}

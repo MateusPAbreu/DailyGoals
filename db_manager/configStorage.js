@@ -54,3 +54,9 @@ export async function lastRow(){
     const info = await db.prepare('SELECT * FROM config');
     return info.lastInsertRowId();
 }
+
+export async function clearConfig(){
+    await db.runAsync('DELET FROM config');
+
+    console.log("Config cleared");
+}
