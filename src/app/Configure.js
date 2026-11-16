@@ -4,7 +4,8 @@ import { SymbolView } from 'expo-symbols';
 import { useState } from 'react';
 import { Alert, Button, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { allRows, initDatabase } from '../../db_manager/configStorage';
+import { allRows, clearConfig, initDatabase } from '../../db_manager/configStorage';
+import { clearDatabase } from '../../db_manager/goalsStorage';
 
 
 
@@ -100,6 +101,16 @@ function Configure() {
                     <Button
                         onPress={() => console.log("Determine notifications!")}
                         title="Get notified"
+                    />
+
+                    <Button
+                        onPress={() => clearDatabase()}
+                        title="Clear goals"
+                    />
+
+                    <Button
+                        onPress={() => clearConfig()}
+                        title="Clear notifications"
                     />
 
                     <Modal
