@@ -25,8 +25,9 @@ export async function getUserPermission(){
     }
 }
 
-export async function dailyReminder(){
+export async function firstDailyReminder(){
     const info = lastRow();
+    console.log(info)
     const id = await Notifications.scheduleNotificationAsync({
         identifier: 'reminder',
         content: {
@@ -36,7 +37,7 @@ export async function dailyReminder(){
         },
         trigger:{
             type: Notifications.SchedulableTriggerInputTypes.DAILY,
-            hour: time.getHours(),
+            hour: info.firstHour,
             minute: time.getMinutes(),
             repeats: true,
         }

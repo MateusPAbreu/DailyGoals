@@ -6,7 +6,7 @@ import { Alert, Button, Modal, Pressable, StyleSheet, Text, View } from 'react-n
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { allRows, clearConfig, initDatabase } from '../../db_manager/configStorage';
 import { clearDatabase } from '../../db_manager/goalsStorage';
-
+import { Notify, firstDailyReminder, getUserPermission } from './Notifications';
 
 
 var showPerce = false;
@@ -38,6 +38,10 @@ function Configure() {
             const lastN = lastTime.toTimeString().slice(0, 5);
             setNotif(firstN, lastN);
 
+            //There's probably a cleaner way to do this, but for now I'll just go with this
+            Notify();
+            getUserPermission();
+            firstDailyReminder();
         }
     }
 
