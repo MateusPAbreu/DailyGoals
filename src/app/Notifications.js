@@ -28,20 +28,25 @@ export async function getUserPermission(){
 export async function firstDailyReminder(){
     const info = lastRow();
     console.log(info)
-    const id = await Notifications.scheduleNotificationAsync({
-        identifier: 'reminder',
-        content: {
-            title: "What's a goal for the day?",
-            body: "Set a goal",
-            sound: true,
-        },
-        trigger:{
-            type: Notifications.SchedulableTriggerInputTypes.DAILY,
-            hour: info.firstHour,
-            minute: time.getMinutes(),
-            repeats: true,
-        }
-    });
+
+    if (!info || info === null){
+        console.log("Info is null");
+    }else{
+        const id = await Notifications.scheduleNotificationAsync({
+            identifier: 'reminder',
+            content: {
+                title: "What's a goal for the day?",
+                body: "Set a goal",
+                sound: true,
+            },
+            trigger:{
+                type: Notifications.SchedulableTriggerInputTypes.DAILY,
+                hour: info.firstHour,
+                minute: time.getMinutes(),
+                repeats: true,
+            }
+        });
+    }
 }
 
 export default Notify
