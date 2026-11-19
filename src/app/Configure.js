@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { Alert, Button, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { allRows, clearConfig, initDatabase } from '../../db_manager/configStorage';
-import { clearDatabase } from '../../db_manager/goalsStorage';
+import { clearDatabase, weeklyAccomplished } from '../../db_manager/goalsStorage';
 import { Notify, firstDailyReminder, getUserPermission } from './Notifications';
 
 
@@ -43,6 +43,12 @@ function Configure() {
             getUserPermission();
             firstDailyReminder();
         }
+    }
+
+    async function getProgress(){
+        const day = new Date();
+        let currentDay = day.getDate();
+        weeklyAccomplished(currentDay);
     }
 
     const ShowPercentage = () => {
@@ -115,6 +121,11 @@ function Configure() {
                     <Button
                         onPress={() => clearConfig()}
                         title="Clear notifications"
+                    />
+
+                    <Button
+                        onPress={() => console.log("Check progress")}
+                        title="Check weekly progress"
                     />
 
                     <Modal

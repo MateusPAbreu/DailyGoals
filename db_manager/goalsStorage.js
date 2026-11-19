@@ -67,6 +67,11 @@ export async function getAccomplished(id) {
     return accomp.accomplished;
 }
 
+export async function weeklyAccomplished(n) {
+    const total = await db.runAsync('SELECT accomplished FROM goals LIMIT ?', [n]);
+    return total;
+}
+
 export async function getGoalWithDate(date) {
     // Check if current day has already established goals
     const db = await initDatabase();
