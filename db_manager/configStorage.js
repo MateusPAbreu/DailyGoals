@@ -42,17 +42,18 @@ export async function allRows() {
 export async function setNotif(firstNot, lastNot) {
     const db = await initDatabase();
     // console.log("Here")
-    const notifications = await db.runAsync(
+    await db.runAsync(
         'INSERT INTO config (firstNot, lastNot) VALUES (?, ?);',
         [firstNot, lastNot]
     );
 
-    return notifications.lastInsertRowId;
+    // return notifications.lastInsertRowId;
 }
 
 export async function lastRow(){
-    const info = await db.prepare('SELECT * FROM config');
-    return info.lastInsertRowId();
+    const db = await initDatabase();
+    const info = await db.getAllAsync('SELECT * FROM config');
+    return info.lastInsertRowId;
 }
 
 export async function clearConfig(){

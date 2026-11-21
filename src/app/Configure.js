@@ -4,7 +4,7 @@ import { SymbolView } from 'expo-symbols';
 import { useState } from 'react';
 import { Alert, Button, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { allRows, clearConfig, initDatabase } from '../../db_manager/configStorage';
+import { allRows, clearConfig, initDatabase, setNotif } from '../../db_manager/configStorage';
 import { clearDatabase, weeklyAccomplished } from '../../db_manager/goalsStorage';
 import { Notify, firstDailyReminder, getUserPermission } from './Notifications';
 
@@ -25,6 +25,7 @@ function Configure() {
 
     initDatabase();
     allRows();
+    const [showModal, setShowModal] = useState(false);
     const [getNotified, setGetNotified] = useState(false);
     const [firstTime, setFirstTime] = useState();
     const [lastTime, setLastTime] = useState()
@@ -32,7 +33,8 @@ function Configure() {
 
 
     async function setUpNotification() {
-  
+
+        console.log(getNotified)
         if (getNotified) {
             const firstN = firstTime.toTimeString().slice(0, 5);
             const lastN = lastTime.toTimeString().slice(0, 5);
@@ -45,7 +47,7 @@ function Configure() {
         }
     }
 
-    async function getProgress(){
+    async function getProgress() {
         const day = new Date();
         let currentDay = day.getDate();
         weeklyAccomplished(currentDay);
@@ -96,7 +98,7 @@ function Configure() {
 
                 <View>
                     <Button
-                        onPress={() => setGetNotified(true)}
+                        onPress={() => setShowModal(true)}
                         title="Do you want notifications?"
                     />
 
@@ -131,17 +133,21 @@ function Configure() {
                     <Modal
                         animationType='fade'
                         transparent={true}
-                        visible={getNotified}
+                        visible={showModal}
                         onRequestClose={() => {
                             Alert.alert('Modal has been closed.');
-                            setGetNotified(!getNotified);
+                            setShowModal(!showModal);
                         }}
                     >
                         <View>
                             <Pressable
                                 onPress={() =>
                                     // navigation.navigate("index")
-                                    setGetNotified(!getNotified)
+                                    {
+                                        setShowModal(!showModal)
+                                        setGetNotified(!getNotified)
+                                    }
+
                                 }
                             >
                                 <SymbolView
