@@ -19,8 +19,8 @@ export async function initDatabase() {
     // console.log(!db)
 
     // if (!db) { 
-        //await cannot be called outside of an async function
-        await db.execAsync(`
+    //await cannot be called outside of an async function
+    await db.execAsync(`
         PRAGMA journal_mode = WAL;
         CREATE TABLE IF NOT EXISTS config (
         id INTEGER PRIMARY KEY NOT NULL,
@@ -42,21 +42,38 @@ export async function allRows() {
 export async function setNotif(firstNot, lastNot) {
     const db = await initDatabase();
     // console.log("Here")
-    await db.runAsync(
-        'INSERT INTO config (firstNot, lastNot) VALUES (?, ?);',
-        [firstNot, lastNot]
-    );
+    const checkExist = await db.runAsync('SELECT COUNT(*) FROM config WHERE id = 1;');
+    console.log("Check exist " + checkExist.lastInsertRowId);
 
+    // const test = await db.runAsync('SELECT * FROM config WHERE id = 1');
+    // console.log("Testing set "+test)
+
+    if (checkExist.lastInsertRowId > 0) {
+        //this is for if the database has already been initialized
+        await db.runAsync(
+            'UPDATE config SET (firstNot, lastNot) = (?, ?) WHERE id = 1;',
+            [firstNot, lastNot]
+        )
+    } else {
+        //this is for if database has not been initialized
+        await db.runAsync(
+            'INSERT INTO config (firstNot, lastNot) VALUES (?, ?);',
+            [firstNot, lastNot]
+        );
+    }
     // return notifications.lastInsertRowId;
 }
 
-export async function lastRow(){
+export async function lastRow() {
     const db = await initDatabase();
     const info = await db.getAllAsync('SELECT * FROM config');
+    const test = await db.getAllAsync('SELECT MAX(id), firstNot, lastNot FROM config');
+    console.log(test);
+    console.log(info.lastInsertRowId)
     return info.lastInsertRowId;
 }
 
-export async function clearConfig(){
+export async function clearConfig() {
     await db.runAsync('DELET FROM config');
 
     console.log("Config cleared");
