@@ -1,5 +1,5 @@
 import * as Notifications from 'expo-notifications';
-import { lastRow } from '../../db_manager/configStorage';
+import { getNotificationTime } from '../../db_manager/configStorage';
 
 export function Notify() {
     Notifications.setNotificationHandler({
@@ -26,9 +26,15 @@ export async function getUserPermission(){
 }
 
 export async function firstDailyReminder(){
-    const info = lastRow();
+    const info = await getNotificationTime();
     console.log("Test")
-    console.log(info)
+    console.log(JSON.stringify(info, null, 2))
+    // console.log(JSON.stringify(info.pop()));
+    const notifs = JSON.parse(JSON.stringify(info));
+    
+    for(var key in notifs){
+        console.log(key)
+    }
 
     // if (!info || info === null){
     //     console.log("Info is null");
