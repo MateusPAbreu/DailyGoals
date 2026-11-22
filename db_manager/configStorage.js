@@ -42,18 +42,23 @@ export async function allRows() {
 export async function setNotif(firstNot, lastNot) {
     const db = await initDatabase();
     // console.log("Here")
-    const checkExist = await db.runAsync('SELECT COUNT(*) FROM config WHERE id = 1;');
-    console.log("Check exist " + checkExist.lastInsertRowId);
+    const checkExist = await db.runAsync('SELECT id FROM config WHERE id = 1;');
+    console.log("Check exist " + JSON.stringify(checkExist, null, 1));
 
     // const test = await db.runAsync('SELECT * FROM config WHERE id = 1');
     // console.log("Testing set "+test)
 
     if (checkExist.lastInsertRowId > 0) {
         //this is for if the database has already been initialized
+        console.log("Updating the database " + firstNot + " " + lastNot)
         await db.runAsync(
             'UPDATE config SET (firstNot, lastNot) = (?, ?) WHERE id = 1;',
             [firstNot, lastNot]
         )
+
+        const result = await db.runAsync('SELECT * FROM config WHERE id = 1;');
+        console.log("Check result " + JSON.stringify(result, null, 1));
+
     } else {
         //this is for if database has not been initialized
         await db.runAsync(
@@ -64,10 +69,11 @@ export async function setNotif(firstNot, lastNot) {
     // return notifications.lastInsertRowId;
 }
 
+//honestly unsure what's the function of this function (ba dum tss) at this point
 export async function lastRow() {
     const db = await initDatabase();
     const info = await db.getAllAsync('SELECT * FROM config');
-    const test = await db.getAllAsync('SELECT MAX(id), firstNot, lastNot FROM config');
+    const test = await db.getAllAsync('SELECT MIN(id), firstNot, lastNot FROM config');
     console.log(test);
     console.log(info.lastInsertRowId)
     return info.lastInsertRowId;

@@ -145,7 +145,7 @@ function Configure() {
                                     // navigation.navigate("index")
                                     {
                                         setShowModal(!showModal)
-                                        setGetNotified(!getNotified)
+                                        setGetNotified(true)
                                     }
 
                                 }
