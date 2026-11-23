@@ -69,6 +69,7 @@ export async function getAccomplished(id) {
 
 export async function weeklyAccomplished(n) {
     const total = await db.runAsync('SELECT accomplished FROM goals LIMIT ?', [n]);
+    console.log(total)
     return total;
 }
 

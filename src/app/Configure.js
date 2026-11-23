@@ -126,7 +126,11 @@ function Configure() {
                     />
 
                     <Button
-                        onPress={() => console.log("Check progress")}
+                        onPress={() => {
+                            const currentDate = new Date();
+                            var dayNum = currentDate.getDay();
+                            weeklyAccomplished(dayNum);
+                        }}
                         title="Check weekly progress"
                     />
 
