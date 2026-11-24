@@ -104,16 +104,12 @@ function Configure() {
 
                     <Button
                         onPress={() => setUpNotification()}
-                        title="Set config"
+                        title="Set notification"
 
                     />
 
                     <ShowPercentage />
 
-                    <Button
-                        onPress={() => console.log("Determine notifications!")}
-                        title="Get notified"
-                    />
 
                     <Button
                         onPress={() => clearDatabase()}

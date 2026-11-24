@@ -62,14 +62,23 @@ export async function setAccomplished(goalText, id) {
 }
 
 export async function getAccomplished(id) {
+    //just figure out how to check out a column instead of just a row
     const accomp = await db.getFirstAsync('SELECT accomplished FROM goals WHERE goals.id=?', [id]);
     console.log("Accomp  " + accomp.accomplished)
     return accomp.accomplished;
 }
 
 export async function weeklyAccomplished(n) {
-    const total = await db.runAsync('SELECT accomplished FROM goals LIMIT ?', [n]);
-    console.log(total)
+    //https://stackoverflow.com/questions/54275458/sqlite-how-to-get-last-record
+    const total = await db.getAllAsync('SELECT accomplished FROM goals ORDER BY rowid DESC LIMIT ?', [n]);
+    var success = 0;
+    var trackRecord = [];
+    // console.log(total.length)
+    for(let i = 0; i < total.length; i++){
+        success = parseInt(total[i]['accomplished']) + success
+    }
+    trackRecord.push(success, total.length)
+    console.log(trackRecord)
     return total;
 }
 
