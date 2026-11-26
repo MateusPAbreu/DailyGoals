@@ -73,25 +73,30 @@ export async function weeklyAccomplished(n) {
     const total = await db.getAllAsync('SELECT accomplished FROM goals ORDER BY rowid DESC LIMIT ?', [n]);
     var success = 0;
     var trackRecord = [];
-    // console.log(total.length)
+
     for(let i = 0; i < total.length; i++){
         success = parseInt(total[i]['accomplished']) + success
     }
     trackRecord.push(success, total.length)
-    console.log(trackRecord)
-    return total;
+
+    return trackRecord;
 }
 
 export async function getGoalWithDate(date) {
     // Check if current day has already established goals
     const db = await initDatabase();
 
-    // console.log("Has goals "+date);
+    console.log("Has goals "+date);
+
+    //I think the problem is here...
     const hasGoals = await db.runAsync('SELECT COUNT(*) FROM goals WHERE goals.date=?', [date]);
-    // console.log("Has goals "+ hasGoals.lastInsertRowId)
+
+    const testGoals = await db.getAllAsync('SELECT goalText FROM goals WHERE date=?', [date]);
+
+    console.log("Testing goals "+ JSON.stringify(testGoals) + " " + testGoals.length)
     // console.log("Has goals "+ JSON.stringify(goalDates))
     
-    if (hasGoals.lastInsertRowId > 0) { //automatically render the goals
+    if (testGoals.length > 0) { //automatically render the goals
         // console.log("here")
         
         const goalDates = await db.getAllAsync('SELECT * FROM goals WHERE goals.date=?', [date]);

@@ -8,47 +8,66 @@ import { useFocusEffect, useNavigation } from 'expo-router';
 import { getAccomplished, getAllGoalsDaily, getGoalWithDate, initDatabase, setAccomplished, setGoal } from '../../db_manager/goalsStorage';
 import { showPercent } from './Configure';
 
+
+//this is gonna be junky and convoluted...
+var userDailyGoals = []
+
 const Main = () => {
     // const navigation = useNavigation(); //Broke the app, worry about it later
     // clearDatabase();
     // console.log(allRows());
     initDatabase();
+
+
     const [userGoal, setUserGoal] = useState();
     const [accomp, setAccomp] = useState({});
     const [allGoals, setAllGoals] = useState();
     const [dailyPercent, setDailyPercent] = useState();
+    const [dailyGoals, setDailyGoals] = useState(userDailyGoals);
 
     //Use this new map use state to map each id to a switch
-    const [dailyGoals, setDailyGoals] = useState([]);
+    // const { data: dailyGoals} = useQuery(['dailyGoals'], loadCurrentGoals);
+
 
     const day = new Date();
+
+
+
 
     let sqliteDay = day.toISOString().split('T')[0];
     let countPrev = 0;
     let countNext = 0;
-    const [sqlDay, setSqlDay] = useState();
+    const [sqlDay, setSqlDay] = useState(sqliteDay);
     const [showPerc, setShowPerc] = useState();
     const [previousDay, setPreviousDay] = useState(new Date());
     const [futureDay, setFutureDay] = useState(new Date());
 
-    // const yesterday = new Date();
-    // const tomorrow = new Date();
+
+    //POTENTIAL SOLUTIONS:
+    //Solution I'm inclined to go with:
+    //
+
 
     useFocusEffect(
         useCallback(
+            // loadCurrentGoals(),
             () => {
                 loadDailyGoals();
                 dailyGoalsPercentage();
-                GoalsList();
+                // GoalsList();
+                // loadCurrentGoals();
+
             }, [])
     )
 
     useEffect(() => {
         setSqlDay(sqliteDay);
         supportPercent();
-        () => {
-            loadCurrentGoals();
-        }
+        // loadCurrentGoals();
+
+        // async () => {
+        //     userDailyGoals = await getGoalWithDate(sqlDay);
+        // }
 
         // prevDay();
     }, []);
@@ -83,8 +102,6 @@ const Main = () => {
         loadDailyGoals();
         dailyGoalsPercentage();
         GoalsList();
-
-
 
     }
 
@@ -163,6 +180,8 @@ const Main = () => {
 
     }
 
+
+
     function supportPercent() {
         const percentValue = showPercent();
         setShowPerc(percentValue);
@@ -187,7 +206,7 @@ const Main = () => {
         return (
             <Pressable
                 onPress={() =>
-                    navigation.navigate("Configure")
+                    navigation.navigate('Configure', { userDailyGoals: "dailyGoals" })
                 }>
                 <SymbolView
                     name={{ ios: 'settings', android: 'settings', web: 'settings' }}
@@ -198,6 +217,7 @@ const Main = () => {
     }
 
     function GoalsList() {
+        // loadCurrentGoals();
         if (dailyGoals == null) {
             return <View></View>
         } else {
@@ -283,6 +303,14 @@ const Main = () => {
                             title="Enter"
                         />
 
+                        {/* <Button
+                            onPress={()=> {
+                                loadCurrentGoals(),
+                                GoalsList()
+                            }}
+                            title="Display list"
+                        /> */}
+
 
                     </Pressable>
 
@@ -325,5 +353,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#adff2f'
     }
 })
+
+export function shareDailyGoalsWithConfig(){
+    return userDailyGoals;   
+}
 
 export default Main;

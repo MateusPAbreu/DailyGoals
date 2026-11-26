@@ -7,9 +7,13 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { allRows, clearConfig, initDatabase, setNotif } from '../../db_manager/configStorage';
 import { clearDatabase, weeklyAccomplished } from '../../db_manager/goalsStorage';
 import { Notify, firstDailyReminder, getUserPermission } from './Notifications';
+import { shareDailyGoalsWithConfig } from './index';
 
 
 var showPerce = false;
+var dailyGoals = shareDailyGoalsWithConfig();
+
+console.log(dailyGoals)
 
 function changeShowPerc() {
     // console.log("Before " + showPerce)
@@ -21,7 +25,7 @@ export function showPercent() {
     return showPerce;
 }
 
-function Configure() {
+function Configure({ route }) {
 
     initDatabase();
     allRows();
@@ -30,7 +34,8 @@ function Configure() {
     const [firstTime, setFirstTime] = useState();
     const [lastTime, setLastTime] = useState()
     const [buttonState, setButtonState] = useState(showPerce.toString());
-
+    // const dailyGoals = getCurrentDailyGoals();
+    console.log(route);
 
     async function setUpNotification() {
 

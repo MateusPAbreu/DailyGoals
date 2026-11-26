@@ -64,7 +64,7 @@ export async function setNotif(firstNot, lastNot) {
 export async function getNotificationTime() {
     const db = await initDatabase();
     const times = await db.getAllAsync('SELECT MIN(id), firstNot, lastNot FROM config');
-    console.log("Times "+JSON.stringify(times));
+    // console.log("Times "+JSON.stringify(times));
     return times;
 }
 
