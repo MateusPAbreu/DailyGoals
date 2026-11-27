@@ -30,10 +30,13 @@ function Configure({ route }) {
     initDatabase();
     allRows();
     const [showModal, setShowModal] = useState(false);
+    const [showModalStats, setShowModalStats] = useState(false);
     const [getNotified, setGetNotified] = useState(false);
     const [firstTime, setFirstTime] = useState();
     const [lastTime, setLastTime] = useState()
     const [buttonState, setButtonState] = useState(showPerce.toString());
+    var totalGoals = 0;
+    var accomplishedGoals = 0;
     // const dailyGoals = getCurrentDailyGoals();
     console.log(route);
 
@@ -128,9 +131,12 @@ function Configure({ route }) {
 
                     <Button
                         onPress={() => {
+                            //so many side effects...
                             const currentDate = new Date();
                             var dayNum = currentDate.getDay();
-                            weeklyAccomplished(dayNum);
+                            var tasks = weeklyAccomplished(dayNum);
+                            accomplishedGoals = tasks[0];
+                            totalGoals = tasks[1];
                         }}
                         title="Check weekly progress"
                     />
@@ -147,11 +153,11 @@ function Configure({ route }) {
                         <View>
                             <Pressable
                                 onPress={() =>
-                                    // navigation.navigate("index")
-                                    {
-                                        setShowModal(!showModal)
-                                        setGetNotified(true)
-                                    }
+                                // navigation.navigate("index")
+                                {
+                                    setShowModal(!showModal)
+                                    setGetNotified(true)
+                                }
 
                                 }
                             >
@@ -198,8 +204,34 @@ function Configure({ route }) {
                                 />
                             </Host>
                         </View>
+                    </Modal>
 
+                    <Modal
+                        animationType='fade'
+                        transparent={true}
+                        visible={showModalStats}
+                        onRequestClose={() => {
+                            Alert.alert('Stats modal has been closed.');
+                            setShowModalStats(!showModalStats);
+                        }}
+                    >
+                        <View>
+                            <Pressable
+                                onPress={() => setShowModalStats(!showModalStats)}
+                            >
+                                <SymbolView
+                                    name={{ ios: 'arrow.backward', android: 'arrow_back', web: 'arrow_back' }}
+                                    tintColor="#36454F"
+                                    size={20}
+                                />
+                            </Pressable>
 
+                            <Text>Total Goals:</Text>
+                            <Text>{totalGoals}</Text>
+
+                            <Text>Accomplished Goals:</Text>
+                            <Text>{accomplishedGoals}</Text>
+                        </View>
                     </Modal>
                 </View>
 
