@@ -132,6 +132,7 @@ function Configure({ route }) {
                     <Button
                         onPress={() => {
                             //so many side effects...
+                            setShowModalStats(!showModalStats);
                             const currentDate = new Date();
                             var dayNum = currentDate.getDay();
                             var tasks = weeklyAccomplished(dayNum);
